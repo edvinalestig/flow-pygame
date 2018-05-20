@@ -24,12 +24,13 @@ class Game():
 
     def loadLevel(self, level):
         
-        tiles = level["tiles"]
+        height = level["height"]
+        width = level["width"]
 
-        size = self.sideLength * (tiles+2), self.sideLength * (tiles+2)
+        size = self.sideLength * (width+2), self.sideLength * (height+2)
         if self.dev: print("Screen size:", size)
 
-        fillHeight, fillWidth = self.sideLength * tiles, self.sideLength * tiles
+        fillHeight, fillWidth = self.sideLength * height, self.sideLength * width
 
         self.screen = pygame.display.set_mode(size)
         
@@ -41,7 +42,7 @@ class Game():
             while j < fillHeight + self.sideLength:
 
                 rectangle = pygame.Rect(i, j, self.sideLength, self.sideLength)
-                pygame.draw.rect(self.screen, [i/2, j/2, 255], rectangle, 5)
+                pygame.draw.rect(self.screen, [i/4, j/4, 255], rectangle, 5)
                 self.rectangles.append(rectangle)
 
                 centrePoint = (math.floor(i + self.sideLength/2), math.floor(j + self.sideLength/2))
