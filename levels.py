@@ -1,8 +1,6 @@
 def getLevel():
-    level1 = {"squares": 5, 
-              "blue": [0, 4], 
-              "red": [5, 24],
-              "yellow": [6, 19]}
+    colours1 = [[(255, 0, 0), 0, 24], [(0, 255, 0), 1, 14], [(0, 0, 255), 7, 23]]
+    level1 = {"tiles": 5, "colours": colours1}
 
 
     return level1

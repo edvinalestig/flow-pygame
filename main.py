@@ -14,7 +14,7 @@ class Game():
         if self.dev: print(config)
         self.sideLength = config["sideLength"]
         
-
+        self.centrePoints = []
         self.rectangles = []
         self.statics = []
         
@@ -24,12 +24,12 @@ class Game():
 
     def loadLevel(self, level):
         
-        squares = level["squares"]
+        tiles = level["tiles"]
 
-        size = self.sideLength * (squares+2), self.sideLength * (squares+2)
+        size = self.sideLength * (tiles+2), self.sideLength * (tiles+2)
         if self.dev: print("Screen size:", size)
 
-        fillHeight, fillWidth = self.sideLength * squares, self.sideLength * squares
+        fillHeight, fillWidth = self.sideLength * tiles, self.sideLength * tiles
 
         self.screen = pygame.display.set_mode(size)
         
@@ -47,27 +47,39 @@ class Game():
                 j += self.sideLength
             i += self.sideLength
 
+        for value in level["colours"]:
+            colour = value[0]
+            index1 = value[1]
+            index2 = value[2]
+            self.createStaticTile(index1, colour)
+            self.createStaticTile(index2, colour)
+
         if self.dev: 
             print("Level loaded")
             print("Rectangles:", self.rectangles)
             print("Statics:", self.statics)
 
 
-    def createStaticSquare(self, index, colour):
+    def createStaticTile(self, index, colour):
         self.statics.append(index)
         rectangle = self.rectangles[index]
         pygame.draw.rect(self.screen, colour, rectangle)
 
 
-    def fillRect(self, pos, colour=[0, 255, 0]): # Byt funktionsnamn
-        for i in self.rectangles:
-            if i.collidepoint(pos):
-                pygame.draw.rect(self.screen, colour, i)
+    def fillTile(self, pos, colour=[0, 255, 0]): # Byt funktionsnamn
+        for i, value in enumerate(self.rectangles):
+            if value.collidepoint(pos):
+                try:
+                    static = self.statics.index(i)
+                except ValueError:
+                    pygame.draw.rect(self.screen, colour, value)
 
-print(sys.argv[1])
-if sys.argv[1] == "-d": 
-    game = Game(True)
-else:
+try:
+    if sys.argv[1] == "-d": 
+        game = Game(True)
+    else:
+        game = Game()
+except IndexError:
     game = Game()
 
 while True:
@@ -76,7 +88,7 @@ while True:
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            game.fillRect(pos)
+            game.fillTile(pos)
             if game.dev: print("Click at", pos)
 
     
