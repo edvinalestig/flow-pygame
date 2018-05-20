@@ -1,9 +1,13 @@
 import pygame, sys
+import levels
 
-pygame.init()
 
 class Game():
     def __init__(self):
+        pygame.init()
+
+        
+        
         self.sideLength = 75
         squares = 5
 
@@ -13,6 +17,8 @@ class Game():
         self.screen = pygame.display.set_mode(size)
 
         self.rectangles = []
+        self.statics = []
+
         i = self.sideLength
         while i < fillWidth + self.sideLength:
 
@@ -26,7 +32,18 @@ class Game():
                 j += self.sideLength
             i += self.sideLength
 
-    def fillRect(self, pos, colour=[0, 255, 0]):
+
+    def createLevel(self, level):
+        pass
+
+
+    def createStaticSquare(self, index, colour):
+        self.statics.append(index)
+        rectangle = self.rectangles[index]
+        pygame.draw.rect(self.screen, colour, rectangle)
+
+
+    def fillRect(self, pos, colour=[0, 255, 0]): # Byt funktionsnamn
         for i in self.rectangles:
             if i.collidepoint(pos):
                 pygame.draw.rect(self.screen, colour, i)
