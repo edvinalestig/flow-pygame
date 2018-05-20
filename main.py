@@ -1,23 +1,38 @@
-import pygame, sys
+import pygame, sys, json
 import levels
 
 
 class Game():
-    def __init__(self):
+    def __init__(self, dev=False):
+        self.dev = dev
+        
         pygame.init()
 
-        
-        
-        self.sideLength = 75
-        squares = 5
+        with open("config.txt") as f:
+            config = json.loads(f.read())
 
-        size = self.sideLength * (squares+2), self.sideLength * (squares+2)
-        fillHeight, fillWidth = self.sideLength * squares, self.sideLength * squares
-
-        self.screen = pygame.display.set_mode(size)
+        if self.dev: print(config)
+        self.sideLength = config["sideLength"]
+        
 
         self.rectangles = []
         self.statics = []
+        
+        level = levels.getLevel()
+        self.loadLevel(level)
+
+
+    def loadLevel(self, level):
+        
+        squares = level["squares"]
+
+        size = self.sideLength * (squares+2), self.sideLength * (squares+2)
+        if self.dev: print("Screen size:", size)
+
+        fillHeight, fillWidth = self.sideLength * squares, self.sideLength * squares
+
+        self.screen = pygame.display.set_mode(size)
+        
 
         i = self.sideLength
         while i < fillWidth + self.sideLength:
@@ -32,9 +47,10 @@ class Game():
                 j += self.sideLength
             i += self.sideLength
 
-
-    def createLevel(self, level):
-        pass
+        if self.dev: 
+            print("Level loaded")
+            print("Rectangles:", self.rectangles)
+            print("Statics:", self.statics)
 
 
     def createStaticSquare(self, index, colour):
@@ -48,8 +64,12 @@ class Game():
             if i.collidepoint(pos):
                 pygame.draw.rect(self.screen, colour, i)
 
+print(sys.argv[1])
+if sys.argv[1] == "-d": 
+    game = Game(True)
+else:
+    game = Game()
 
-game = Game()
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: 
@@ -57,6 +77,7 @@ while True:
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             game.fillRect(pos)
+            if game.dev: print("Click at", pos)
 
     
     pygame.display.flip()
