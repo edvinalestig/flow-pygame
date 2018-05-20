@@ -1,4 +1,4 @@
-import pygame, sys, json
+import pygame, sys, json, math
 import levels
 
 
@@ -44,6 +44,9 @@ class Game():
                 pygame.draw.rect(self.screen, [i/2, j/2, 255], rectangle, 5)
                 self.rectangles.append(rectangle)
 
+                centrePoint = (math.floor(i + self.sideLength/2), math.floor(j + self.sideLength/2))
+                self.centrePoints.append(centrePoint)
+
                 j += self.sideLength
             i += self.sideLength
 
@@ -58,12 +61,15 @@ class Game():
             print("Level loaded")
             print("Rectangles:", self.rectangles)
             print("Statics:", self.statics)
+            print("Centre points:", self.centrePoints)
 
 
     def createStaticTile(self, index, colour):
         self.statics.append(index)
-        rectangle = self.rectangles[index]
-        pygame.draw.rect(self.screen, colour, rectangle)
+        # rectangle = self.rectangles[index]
+        # pygame.draw.rect(self.screen, colour, rectangle)
+        centrePoint = self.centrePoints[index]
+        pygame.draw.circle(self.screen, colour, centrePoint, 20)
 
 
     def fillTile(self, pos, colour=[0, 255, 0]): # Byt funktionsnamn
