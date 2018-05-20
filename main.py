@@ -15,17 +15,21 @@ class Game():
         self.rectangles = []
         i = self.sideLength
         while i < fillWidth + self.sideLength:
+
             j = self.sideLength
             while j < fillHeight + self.sideLength:
+
                 rectangle = pygame.Rect(i, j, self.sideLength, self.sideLength)
-                drawnRectangle = pygame.draw.rect(self.screen, [i/2, j/2, 255], rectangle, 5)
-                self.rectangles.append(drawnRectangle)
+                pygame.draw.rect(self.screen, [i/2, j/2, 255], rectangle, 5)
+                self.rectangles.append(rectangle)
 
                 j += self.sideLength
             i += self.sideLength
 
     def fillRect(self, pos, colour=[0, 255, 0]):
-        pass
+        for i in self.rectangles:
+            if i.collidepoint(pos):
+                pygame.draw.rect(self.screen, colour, i)
 
 
 game = Game()
@@ -35,6 +39,7 @@ while True:
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
+            game.fillRect(pos)
 
     
     pygame.display.flip()
