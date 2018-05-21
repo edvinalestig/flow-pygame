@@ -17,6 +17,7 @@ class Game():
         self.centrePoints = []
         self.rectangles = []
         self.statics = []
+        self.filledTiles = []
         
         level = levels.getLevel()
         self.loadLevel(level)
@@ -47,6 +48,7 @@ class Game():
 
                 centrePoint = (math.floor(i + self.sideLength/2), math.floor(j + self.sideLength/2))
                 self.centrePoints.append(centrePoint)
+                self.filledTiles.append(False)
 
                 j += self.sideLength
             i += self.sideLength
@@ -67,8 +69,6 @@ class Game():
 
     def createStaticTile(self, index, colour):
         self.statics.append(index)
-        # rectangle = self.rectangles[index]
-        # pygame.draw.rect(self.screen, colour, rectangle)
         centrePoint = self.centrePoints[index]
         pygame.draw.circle(self.screen, colour, centrePoint, 20)
 
@@ -79,7 +79,15 @@ class Game():
                 try:
                     static = self.statics.index(i)
                 except ValueError:
-                    pygame.draw.rect(self.screen, colour, value)
+                    if not self.filledTiles[i]:
+                        pygame.draw.rect(self.screen, colour, value)
+                        self.filledTiles[i] = True
+                    else:
+                        pygame.draw.rect(self.screen, (0, 0, 0), value)
+                        pygame.draw.rect(self.screen, (15, 15, 200), value, 8)
+                        self.filledTiles[i] = False
+                    
+                    
 
 try:
     if sys.argv[1] == "-d": 
