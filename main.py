@@ -71,23 +71,36 @@ class Game():
     def createStaticTile(self, index, colour):
         self.statics.append([index, colour])
         centrePoint = self.centrePoints[index]
-        pygame.draw.circle(self.screen, colour, centrePoint, 20)
+        pygame.draw.circle(self.screen, colour, centrePoint, math.floor(self.sideLength/3))
 
 
-    def fillTile(self, pos, colour=[0, 255, 0]): # Byt funktionsnamn
-        for i, value in enumerate(self.rectangles):
-            if value.collidepoint(pos):
-                for array in self.statics:
-                    if array[0] == i:
-                        return
+    def fillTile(self, pos=None, colour=[0, 255, 0], index=None): # Byt funktionsnamn
+        if pos:
+            for i, value in enumerate(self.rectangles):
+                if value.collidepoint(pos):
+                    for array in self.statics:
+                        if array[0] == i:
+                            return
 
-                if not self.filledTiles[i]:
-                    pygame.draw.rect(self.screen, colour, value)
-                    self.filledTiles[i] = True
-                else:
-                    pygame.draw.rect(self.screen, (0, 0, 0), value)
-                    pygame.draw.rect(self.screen, (15, 15, 200), value, 8)
-                    self.filledTiles[i] = False
+                    if not self.filledTiles[i]:
+                        pygame.draw.rect(self.screen, colour, value)
+                        self.filledTiles[i] = True
+                    else:
+                        pygame.draw.rect(self.screen, (0, 0, 0), value)
+                        pygame.draw.rect(self.screen, (15, 15, 200), value, 8)
+                        self.filledTiles[i] = False
+        else:
+            for array in self.statics:
+                if array[0] == index:
+                    return
+
+            if not self.filledTiles[index]:
+                pygame.draw.rect(self.screen, colour, self.rectangles[index])
+                self.filledTiles[index] = True
+            else:
+                pygame.draw.rect(self.screen, (0, 0, 0), self.rectangles[index])
+                pygame.draw.rect(self.screen, (15, 15, 200), self.rectangles[index], 8)
+                self.filledTiles[index] = False
 
 
     def mouseTrack(self, event):
@@ -103,7 +116,8 @@ class Game():
                             
                             self.selectedColour = array[1]
                             if self.dev: print("Selected colour:", self.selectedColour)
-                            
+
+                            self.changedTiles = []
 
                             return
         
@@ -112,7 +126,24 @@ class Game():
             
             
         elif self.mousePressed:
-            if self.dev: print(pygame.mouse.get_pos())
+            pos = pygame.mouse.get_pos()
+            if self.dev: print(pos)
+
+            for i, rect in enumerate(self.rectangles):
+                if rect.collidepoint(pos):
+                    try:
+                        self.changedTiles.index(i)
+                        # if self.dev: print("Tile already changed")
+                        return
+                    except ValueError:
+                        pass
+                    self.changedTiles.append(i)
+                    if self.dev: print("Tile changed")
+
+                    self.fillTile(colour=self.selectedColour, index=i)
+
+
+
             
             
             
@@ -132,10 +163,10 @@ while True:
         if event.type == pygame.QUIT: 
             if game.dev: print("Exiting..")
             sys.exit()
-        elif event.type == pygame.MOUSEBUTTONUP:
-            pos = pygame.mouse.get_pos()
-            game.fillTile(pos)
-            if game.dev: print("Click at", pos)
+        # elif event.type == pygame.MOUSEBUTTONUP:
+        #     pos = pygame.mouse.get_pos()
+        #     game.fillTile(pos)
+        #     if game.dev: print("Click at", pos)
 
         game.mouseTrack(event)
 
