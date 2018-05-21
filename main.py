@@ -26,13 +26,13 @@ class Game():
 
     def loadLevel(self, level):
         
-        height = level["height"]
-        width = level["width"]
+        self.height = level["height"]
+        self.width = level["width"]
 
-        size = self.sideLength * (width+2), self.sideLength * (height+2)
+        size = self.sideLength * (self.width+2), self.sideLength * (self.height+2)
         if self.dev: print("Screen size:", size)
 
-        fillHeight, fillWidth = self.sideLength * height, self.sideLength * width
+        fillHeight, fillWidth = self.sideLength * self.height, self.sideLength * self.width
 
         self.screen = pygame.display.set_mode(size)
         
@@ -102,6 +102,21 @@ class Game():
                 pygame.draw.rect(self.screen, (15, 15, 200), self.rectangles[index], 8)
                 self.filledTiles[index] = False
 
+    def removeTile(self, index):
+        for array in self.statics:
+            if array[0] == index:
+                return
+        
+        pygame.draw.rect(self.screen, (0, 0, 0), self.rectangles[index])
+
+        red = math.floor(((index / self.height) * self.sideLength)/4)
+        if self.dev: print("Red:", red)
+        green = math.floor(((index / self.width) * self.sideLength)/4)
+        if self.dev: print("Green:", green)
+        colour = (red, green, 255)
+        pygame.draw.rect(self.screen, colour, self.rectangles[index], 8)
+        self.filledTiles[index] = False
+
 
     def mouseTrack(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -120,6 +135,9 @@ class Game():
                             self.changedTiles = []
 
                             return
+                    if self.filledTiles[i]:
+                        self.removeTile(i)
+
         
         elif event.type == pygame.MOUSEBUTTONUP:
             self.mousePressed = False
@@ -163,10 +181,6 @@ while True:
         if event.type == pygame.QUIT: 
             if game.dev: print("Exiting..")
             sys.exit()
-        # elif event.type == pygame.MOUSEBUTTONUP:
-        #     pos = pygame.mouse.get_pos()
-        #     game.fillTile(pos)
-        #     if game.dev: print("Click at", pos)
 
         game.mouseTrack(event)
 
