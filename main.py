@@ -68,7 +68,7 @@ class Game():
 
 
     def createStaticTile(self, index, colour):
-        self.statics.append(index)
+        self.statics.append([index, colour])
         centrePoint = self.centrePoints[index]
         pygame.draw.circle(self.screen, colour, centrePoint, 20)
 
@@ -76,16 +76,23 @@ class Game():
     def fillTile(self, pos, colour=[0, 255, 0]): # Byt funktionsnamn
         for i, value in enumerate(self.rectangles):
             if value.collidepoint(pos):
-                try:
-                    static = self.statics.index(i)
-                except ValueError:
-                    if not self.filledTiles[i]:
-                        pygame.draw.rect(self.screen, colour, value)
-                        self.filledTiles[i] = True
-                    else:
-                        pygame.draw.rect(self.screen, (0, 0, 0), value)
-                        pygame.draw.rect(self.screen, (15, 15, 200), value, 8)
-                        self.filledTiles[i] = False
+                for array in self.statics:
+                    if array[0] == i:
+                        return
+
+                if not self.filledTiles[i]:
+                    pygame.draw.rect(self.screen, colour, value)
+                    self.filledTiles[i] = True
+                else:
+                    pygame.draw.rect(self.screen, (0, 0, 0), value)
+                    pygame.draw.rect(self.screen, (15, 15, 200), value, 8)
+                    self.filledTiles[i] = False
+
+
+    def mouseTrack(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.mousePressed = True
+            self.selectedColour = None
                     
                     
 
@@ -100,6 +107,7 @@ except IndexError:
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: 
+            if game.dev: print("Exiting..")
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
