@@ -18,6 +18,7 @@ class Game():
         self.rectangles = []
         self.statics = []
         self.filledTiles = []
+        self.mousePressed = False
         
         level = levels.getLevel()
         self.loadLevel(level)
@@ -91,8 +92,30 @@ class Game():
 
     def mouseTrack(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            self.mousePressed = True
-            self.selectedColour = None
+
+            pos = pygame.mouse.get_pos()
+            for i, value in enumerate(self.rectangles):
+                if value.collidepoint(pos):
+                    for array in self.statics:
+                        if array[0] == i:
+                            self.mousePressed = True
+                            if self.dev: print("Mouse pressed at a static tile")
+                            
+                            self.selectedColour = array[1]
+                            if self.dev: print("Selected colour:", self.selectedColour)
+                            
+
+                            return
+        
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self.mousePressed = False
+            
+            
+        elif self.mousePressed:
+            if self.dev: print(pygame.mouse.get_pos())
+            
+            
+            
                     
                     
 
@@ -113,6 +136,8 @@ while True:
             pos = pygame.mouse.get_pos()
             game.fillTile(pos)
             if game.dev: print("Click at", pos)
+
+        game.mouseTrack(event)
 
     
     pygame.display.flip()
