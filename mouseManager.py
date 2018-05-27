@@ -39,17 +39,29 @@ class MouseManager():
             for i, rect in enumerate(self.game.rectangles):
                 if rect.collidepoint(pos):
                     if i != self.lastSelectedTile:
-                        try:
-                            self.game.changedTiles.index(i)
-                            return
 
-                        except ValueError:
-                            self.game.changedTiles.append(i)
+                        neighbourTile = False
+                        if i == self.lastSelectedTile + 1:
+                            neighbourTile = True
+                        elif i == self.lastSelectedTile - 1:
+                            neighbourTile = True
+                        elif i == self.lastSelectedTile + self.game.height:
+                            neighbourTile = True
+                        elif i == self.lastSelectedTile - self.game.height:
+                            neighbourTile = True
 
-                        if self.game.dev: print("Tile changed:", i)
+                        if neighbourTile:
+                            try:
+                                self.game.changedTiles.index(i)
+                                return
 
-                        self.game.drawLine(self.lastSelectedTile, i, self.game.selectedColour)
+                            except ValueError:
+                                self.game.changedTiles.append(i)
 
-                        #self.game.fillTile(colour=self.game.selectedColour, index=i)
-                        self.lastSelectedTile = i
+                            if self.game.dev: print("Tile changed:", i)
+
+                            self.game.drawLine(self.lastSelectedTile, i, self.game.selectedColour)
+
+                            #self.game.fillTile(colour=self.game.selectedColour, index=i)
+                            self.lastSelectedTile = i
                         return
