@@ -4,10 +4,9 @@ class GraphicsManager():
     def __init__(self, logicClass):
         self.logic = logicClass
         self.length = logicClass.sideLength
-        # self.screen = logicClass.screen
 
     
-    def drawBoard(self, length, width, height):
+    def drawBoard(self, length, width, height):        
         totalHeight = length * height
         totalWidth = length * width
         borderColour = (64, 64, 176)
@@ -30,7 +29,23 @@ class GraphicsManager():
                 x += length
             y += length
 
+
     def drawEndPoint(self, tile, colour):
         self.logic.statics.append([tile, colour])
         centrePoint = self.logic.centrePoints[tile]
         pygame.draw.circle(self.logic.screen, colour, centrePoint, math.floor(self.length/3))
+
+
+    def removeTile(self, tile):
+        pygame.draw.rect(self.logic.screen, (0, 0, 0), self.logic.rectangles[tile])
+        pygame.draw.rect(self.logic.screen, (64, 64, 176), self.logic.rectangles[tile], 5)
+        self.logic.filledTiles[tile] = False
+
+
+    def drawLine(self, tile1, tile2, colour):
+        tile1Centre = self.logic.centrePoints[tile1]
+        tile2Centre = self.logic.centrePoints[tile2]
+        
+        width = 10
+        rect = pygame.draw.line(self.logic.screen, colour, tile1Centre, tile2Centre, width)
+        self.logic.filledTiles[tile2] = True

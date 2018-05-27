@@ -55,6 +55,7 @@ class Game():
             self.graphicsManager.drawEndPoint(index1, colour)
             self.graphicsManager.drawEndPoint(index2, colour)
 
+        # Extra stuff for developer mode
         if self.dev: 
             rect = pygame.Rect(0, 0, 100, 25)
             self.reloadButton = pygame.draw.rect(self.screen, (255,255,255), rect)
@@ -66,17 +67,12 @@ class Game():
             print("Filled tiles:", self.filledTiles)
     
 
-    def removeTile(self, index):
+    def removeTile(self, tile):
         for array in self.statics:
-            if array[0] == index:
+            if array[0] == tile:
                 return
-        
-        pygame.draw.rect(self.screen, (0, 0, 0), self.rectangles[index])
 
-       
-        colour = (64, 64, 176)
-        pygame.draw.rect(self.screen, colour, self.rectangles[index], 5)
-        self.filledTiles[index] = False
+        self.graphicsManager.removeTile(tile)
 
 
     def drawLine(self, tile1, tile2, colour):
@@ -94,12 +90,7 @@ class Game():
             self.mouseManager.mousePressed = False
             return
         
-        tile1Centre = self.centrePoints[tile1]
-        tile2Centre = self.centrePoints[tile2]
-        
-        width = 10
-        rect = pygame.draw.line(self.screen, colour, tile1Centre, tile2Centre, width)
-        self.filledTiles[tile2] = True
+        self.graphicsManager.drawLine(tile1, tile2, colour)
 
 
 
