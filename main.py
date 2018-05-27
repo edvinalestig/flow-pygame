@@ -1,5 +1,5 @@
 import pygame, sys, json, math
-import levels
+import levels, mouseManager
 
 
 class Game():
@@ -18,10 +18,12 @@ class Game():
         self.rectangles = []
         self.statics = []
         self.filledTiles = []
-        self.mousePressed = False
+        # self.mousePressed = False
         
         level = levels.getLevel()
         self.loadLevel(level)
+
+        self.mouseManager = mouseManager.MouseManager(self)
 
 
     def loadLevel(self, level):
@@ -37,6 +39,7 @@ class Game():
         self.screen = pygame.display.set_mode(size)
         
 
+        # Create tiles
         i = self.sideLength
         while i < fillWidth + self.sideLength:
 
@@ -54,6 +57,7 @@ class Game():
                 j += self.sideLength
             i += self.sideLength
 
+        # Create the end points (static tiles)
         for value in level["colours"]:
             colour = value[0]
             index1 = value[1]
@@ -74,33 +78,19 @@ class Game():
         pygame.draw.circle(self.screen, colour, centrePoint, math.floor(self.sideLength/3))
 
 
-    def fillTile(self, pos=None, colour=[0, 255, 0], index=None): # Byt funktionsnamn
-        if pos:
-            for i, value in enumerate(self.rectangles):
-                if value.collidepoint(pos):
-                    for array in self.statics:
-                        if array[0] == i:
-                            return
+    def fillTile(self, colour=[0, 255, 0], index=None): # Byt funktionsnamn
+        for array in self.statics:
+            if array[0] == index:
+                return
 
-                    if not self.filledTiles[i]:
-                        pygame.draw.rect(self.screen, colour, value)
-                        self.filledTiles[i] = True
-                    else:
-                        pygame.draw.rect(self.screen, (0, 0, 0), value)
-                        pygame.draw.rect(self.screen, (15, 15, 200), value, 8)
-                        self.filledTiles[i] = False
+        if not self.filledTiles[index]:
+            pygame.draw.rect(self.screen, colour, self.rectangles[index])
+            self.filledTiles[index] = True
         else:
-            for array in self.statics:
-                if array[0] == index:
-                    return
-
-            if not self.filledTiles[index]:
-                pygame.draw.rect(self.screen, colour, self.rectangles[index])
-                self.filledTiles[index] = True
-            else:
-                pygame.draw.rect(self.screen, (0, 0, 0), self.rectangles[index])
-                pygame.draw.rect(self.screen, (15, 15, 200), self.rectangles[index], 8)
-                self.filledTiles[index] = False
+            pygame.draw.rect(self.screen, (0, 0, 0), self.rectangles[index])
+            pygame.draw.rect(self.screen, (15, 15, 200), self.rectangles[index], 8)
+            self.filledTiles[index] = False
+    
 
     def removeTile(self, index):
         for array in self.statics:
@@ -114,51 +104,10 @@ class Game():
         green = math.floor(((index / self.width) * self.sideLength)/4)
         if self.dev: print("Green:", green)
         colour = (red, green, 255)
-        pygame.draw.rect(self.screen, colour, self.rectangles[index], 8)
+        pygame.draw.rect(self.screen, colour, self.rectangles[index], 5)
         self.filledTiles[index] = False
 
 
-    def mouseTrack(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-
-            pos = pygame.mouse.get_pos()
-            for i, value in enumerate(self.rectangles):
-                if value.collidepoint(pos):
-                    for array in self.statics:
-                        if array[0] == i:
-                            self.mousePressed = True
-                            if self.dev: print("Mouse pressed at a static tile")
-                            
-                            self.selectedColour = array[1]
-                            if self.dev: print("Selected colour:", self.selectedColour)
-
-                            self.changedTiles = []
-
-                            return
-                    if self.filledTiles[i]:
-                        self.removeTile(i)
-
-        
-        elif event.type == pygame.MOUSEBUTTONUP:
-            self.mousePressed = False
-            
-            
-        elif self.mousePressed:
-            pos = pygame.mouse.get_pos()
-            if self.dev: print(pos)
-
-            for i, rect in enumerate(self.rectangles):
-                if rect.collidepoint(pos):
-                    try:
-                        self.changedTiles.index(i)
-                        # if self.dev: print("Tile already changed")
-                        return
-                    except ValueError:
-                        pass
-                    self.changedTiles.append(i)
-                    if self.dev: print("Tile changed")
-
-                    self.fillTile(colour=self.selectedColour, index=i)
 
 
 
@@ -182,7 +131,7 @@ while True:
             if game.dev: print("Exiting..")
             sys.exit()
 
-        game.mouseTrack(event)
+        game.mouseManager.mouseTrack(event)
 
     
     pygame.display.flip()
