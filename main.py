@@ -1,28 +1,34 @@
 import pygame, sys, json, math
-import levels, mouseManager
+import levels, mouseManager, graphicsManager
 
 
 class Game():
     def __init__(self, dev=False):
         self.dev = dev
         
-        pygame.init()
-
         with open("config.txt") as f:
             config = json.loads(f.read())
 
         if self.dev: print(config)
         self.sideLength = config["sideLength"]
+
+        pygame.init()
+        self.mouseManager = mouseManager.MouseManager(self)
+        self.graphicsManager = graphicsManager.GraphicsManager(self)
+
+
+        
         
         self.centrePoints = []
         self.rectangles = []
         self.statics = []
         self.filledTiles = []
+        self.connections = []
         
         level = levels.getLevel()
         self.loadLevel(level)
 
-        self.mouseManager = mouseManager.MouseManager(self)
+        
 
 
     def loadLevel(self, level):
@@ -39,30 +45,35 @@ class Game():
         
 
         # Create tiles
-        i = self.sideLength
-        while i < fillWidth + self.sideLength:
 
-            j = self.sideLength
-            while j < fillHeight + self.sideLength:
+        # i = self.sideLength
+        # while i < fillWidth + self.sideLength:
 
-                rectangle = pygame.Rect(i, j, self.sideLength, self.sideLength)
-                pygame.draw.rect(self.screen, [i/4, j/4, 255], rectangle, 5)
-                self.rectangles.append(rectangle)
+        #     j = self.sideLength
+        #     while j < fillHeight + self.sideLength:
 
-                centrePoint = (math.floor(i + self.sideLength/2), math.floor(j + self.sideLength/2))
-                self.centrePoints.append(centrePoint)
-                self.filledTiles.append(False)
+        #         rectangle = pygame.Rect(i, j, self.sideLength, self.sideLength)
+        #         pygame.draw.rect(self.screen, [i/4, j/4, 255], rectangle, 5)
+        #         self.rectangles.append(rectangle)
 
-                j += self.sideLength
-            i += self.sideLength
+        #         centrePoint = (math.floor(i + self.sideLength/2), math.floor(j + self.sideLength/2))
+        #         self.centrePoints.append(centrePoint)
+        #         self.filledTiles.append(False)
+
+        #         j += self.sideLength
+        #     i += self.sideLength
+        self.graphicsManager.drawBoard(self.sideLength, self.width, self.height)
+
 
         # Create the end points (static tiles)
         for value in level["colours"]:
             colour = value[0]
             index1 = value[1]
             index2 = value[2]
-            self.createStaticTile(index1, colour)
-            self.createStaticTile(index2, colour)
+            # self.createStaticTile(index1, colour)
+            # self.createStaticTile(index2, colour)
+            self.graphicsManager.drawEndPoint(index1, colour)
+            self.graphicsManager.drawEndPoint(index2, colour)
 
         if self.dev: 
             rect = pygame.Rect(0, 0, 100, 25)
@@ -72,26 +83,13 @@ class Game():
             print("Rectangles:", self.rectangles)
             print("Statics:", self.statics)
             print("Centre points:", self.centrePoints)
+            print("Filled tiles:", self.filledTiles)
 
 
     def createStaticTile(self, index, colour):
         self.statics.append([index, colour])
         centrePoint = self.centrePoints[index]
         pygame.draw.circle(self.screen, colour, centrePoint, math.floor(self.sideLength/3))
-
-
-    def fillTile(self, colour=[0, 255, 0], index=None): # Byt funktionsnamn
-        for array in self.statics:
-            if array[0] == index:
-                return
-
-        if not self.filledTiles[index]:
-            pygame.draw.rect(self.screen, colour, self.rectangles[index])
-            self.filledTiles[index] = True
-        else:
-            pygame.draw.rect(self.screen, (0, 0, 0), self.rectangles[index])
-            pygame.draw.rect(self.screen, (15, 15, 200), self.rectangles[index], 8)
-            self.filledTiles[index] = False
     
 
     def removeTile(self, index):
