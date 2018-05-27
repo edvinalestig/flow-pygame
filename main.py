@@ -73,11 +73,8 @@ class Game():
         
         pygame.draw.rect(self.screen, (0, 0, 0), self.rectangles[index])
 
-        red = math.floor(((index / self.height) * self.sideLength)/4)
-        if self.dev: print("Red:", red)
-        green = math.floor(((index / self.width) * self.sideLength)/4)
-        if self.dev: print("Green:", green)
-        colour = (red, green, 255)
+       
+        colour = (64, 64, 176)
         pygame.draw.rect(self.screen, colour, self.rectangles[index], 5)
         self.filledTiles[index] = False
 

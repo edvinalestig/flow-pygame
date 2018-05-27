@@ -10,6 +10,7 @@ class GraphicsManager():
     def drawBoard(self, length, width, height):
         totalHeight = length * height
         totalWidth = length * width
+        borderColour = (64, 64, 176)
         
         y = length
         while y < totalHeight + length:
@@ -19,7 +20,7 @@ class GraphicsManager():
 
                 # Rect(left, top, width, height) -> Rect
                 rectangle = pygame.Rect(x, y, length, length)
-                pygame.draw.rect(self.logic.screen, [x/4, y/4, 255], rectangle, 5)
+                pygame.draw.rect(self.logic.screen, borderColour, rectangle, 5)
                 self.logic.rectangles.append(rectangle)
 
                 centrePoint = (math.floor(x + length/2), math.floor(y + length/2))
