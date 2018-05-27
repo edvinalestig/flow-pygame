@@ -46,6 +46,7 @@ class GraphicsManager():
         tile1Centre = self.logic.centrePoints[tile1]
         tile2Centre = self.logic.centrePoints[tile2]
         
-        width = 10
+        width = self.length/4
+        width = math.floor(width)
         rect = pygame.draw.line(self.logic.screen, colour, tile1Centre, tile2Centre, width)
         self.logic.filledTiles[tile2] = True

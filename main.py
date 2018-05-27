@@ -1,4 +1,4 @@
-import pygame, sys, json, math
+import pygame, sys, json
 import levels, mouseManager, graphicsManager
 
 
@@ -91,6 +91,12 @@ class Game():
             return
         
         self.graphicsManager.drawLine(tile1, tile2, colour)
+
+
+    def reloadBoard(self):
+        # When a new connection is added, reload the board to show new lines. 
+        # When a connection is removed it becomes easier to remove the line.
+        pass
 
 
 

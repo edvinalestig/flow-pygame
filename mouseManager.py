@@ -25,12 +25,12 @@ class MouseManager():
                     for array in self.game.statics:
                         if array[0] == i:
                             self.mousePressed = True
-                            if self.game.dev: print("Mouse pressed at a static tile")
+                            if self.game.dev: print("Mouse pressed on a static tile")
                             
-                            self.game.selectedColour = array[1]
-                            if self.game.dev: print("Selected colour:", self.game.selectedColour)
+                            self.selectedColour = array[1]
+                            if self.game.dev: print("Selected colour:", self.selectedColour)
 
-                            self.game.changedTiles = []
+                            self.changedTiles = []
 
                             return
                     if self.game.filledTiles[i]:
@@ -53,23 +53,22 @@ class MouseManager():
                             neighbourTile = True
                         elif i == self.lastSelectedTile - 1:
                             neighbourTile = True
-                        elif i == self.lastSelectedTile + self.game.height:
+                        elif i == self.lastSelectedTile + self.game.width:
                             neighbourTile = True
-                        elif i == self.lastSelectedTile - self.game.height:
+                        elif i == self.lastSelectedTile - self.game.width:
                             neighbourTile = True
 
                         if neighbourTile:
                             try:
-                                self.game.changedTiles.index(i)
+                                self.changedTiles.index(i)
                                 return
 
                             except ValueError:
-                                self.game.changedTiles.append(i)
+                                self.changedTiles.append(i)
 
                             if self.game.dev: print("Tile changed:", i)
 
-                            self.game.drawLine(self.lastSelectedTile, i, self.game.selectedColour)
+                            self.game.drawLine(self.lastSelectedTile, i, self.selectedColour)
 
-                            #self.game.fillTile(colour=self.game.selectedColour, index=i)
                             self.lastSelectedTile = i
                         return
