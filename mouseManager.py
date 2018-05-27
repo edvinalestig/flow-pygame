@@ -68,7 +68,8 @@ class MouseManager():
 
                             if self.game.dev: print("Tile changed:", i)
 
-                            self.game.drawLine(self.lastSelectedTile, i, self.selectedColour)
+                            self.game.addConnection(self.lastSelectedTile, i, self.selectedColour)
+                            # self.game.drawLine(self.lastSelectedTile, i, self.selectedColour)
 
                             self.lastSelectedTile = i
                         return

@@ -24,16 +24,16 @@ class Game():
         self.filledTiles = []
         self.connections = []
         
-        level = levels.getLevel()
-        self.loadLevel(level)
+        self.level = levels.getLevel()
+        self.loadLevel()
 
         
 
 
-    def loadLevel(self, level):
+    def loadLevel(self):
         
-        self.height = level["height"]
-        self.width = level["width"]
+        self.height = self.level["height"]
+        self.width = self.level["width"]
 
         size = self.sideLength * (self.width+2), self.sideLength * (self.height+2)
         if self.dev: print("Screen size:", size)
@@ -48,12 +48,14 @@ class Game():
 
 
         # Create the end points (static tiles)
-        for value in level["colours"]:
+        for value in self.level["colours"]:
             colour = value[0]
             index1 = value[1]
             index2 = value[2]
             self.graphicsManager.drawEndPoint(index1, colour)
             self.graphicsManager.drawEndPoint(index2, colour)
+            self.statics.append([index1, colour])
+            self.statics.append([index2, colour])
 
         # Extra stuff for developer mode
         if self.dev: 
@@ -64,7 +66,7 @@ class Game():
             print("Rectangles:", self.rectangles)
             print("Statics:", self.statics)
             print("Centre points:", self.centrePoints)
-            print("Filled tiles:", self.filledTiles)
+            print("Connections:", self.connections)
     
 
     def removeTile(self, tile):
@@ -96,7 +98,24 @@ class Game():
     def reloadBoard(self):
         # When a new connection is added, reload the board to show new lines. 
         # When a connection is removed it becomes easier to remove the line.
-        pass
+        self.graphicsManager.drawBoard(self.sideLength, self.width, self.height)
+
+        for value in self.level["colours"]:
+            colour = value[0]
+            tile1 = value[1]
+            tile2 = value[2]
+            self.graphicsManager.drawEndPoint(tile1, colour)
+            self.graphicsManager.drawEndPoint(tile2, colour)
+
+        for array in self.connections:
+            self.graphicsManager.drawLine(array[0], array[1], array[2])
+        
+
+
+    def addConnection(self, tile1, tile2, colour):
+        self.connections.append((tile1, tile2, colour))
+        self.reloadBoard()
+        print("Connections:", self.connections)
 
 
 

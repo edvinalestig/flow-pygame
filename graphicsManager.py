@@ -9,6 +9,10 @@ class GraphicsManager():
     def drawBoard(self, length, width, height):        
         totalHeight = length * height
         totalWidth = length * width
+
+        board = pygame.Rect(length, length, length+totalWidth, length+totalHeight)
+        pygame.draw.rect(self.logic.screen, (0,0,0), board)
+
         borderColour = (64, 64, 176)
         
         y = length
@@ -31,7 +35,6 @@ class GraphicsManager():
 
 
     def drawEndPoint(self, tile, colour):
-        self.logic.statics.append([tile, colour])
         centrePoint = self.logic.centrePoints[tile]
         pygame.draw.circle(self.logic.screen, colour, centrePoint, math.floor(self.length/3))
 
