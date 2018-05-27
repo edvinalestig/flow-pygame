@@ -12,13 +12,12 @@ class Game():
         if self.dev: print(config)
         self.sideLength = config["sideLength"]
 
+        # Initialise classes
         pygame.init()
         self.mouseManager = mouseManager.MouseManager(self)
         self.graphicsManager = graphicsManager.GraphicsManager(self)
 
-
-        
-        
+        # Game data
         self.centrePoints = []
         self.rectangles = []
         self.statics = []
@@ -44,24 +43,7 @@ class Game():
         self.screen = pygame.display.set_mode(size)
         
 
-        # Create tiles
-
-        # i = self.sideLength
-        # while i < fillWidth + self.sideLength:
-
-        #     j = self.sideLength
-        #     while j < fillHeight + self.sideLength:
-
-        #         rectangle = pygame.Rect(i, j, self.sideLength, self.sideLength)
-        #         pygame.draw.rect(self.screen, [i/4, j/4, 255], rectangle, 5)
-        #         self.rectangles.append(rectangle)
-
-        #         centrePoint = (math.floor(i + self.sideLength/2), math.floor(j + self.sideLength/2))
-        #         self.centrePoints.append(centrePoint)
-        #         self.filledTiles.append(False)
-
-        #         j += self.sideLength
-        #     i += self.sideLength
+        # Draw board
         self.graphicsManager.drawBoard(self.sideLength, self.width, self.height)
 
 
@@ -70,8 +52,6 @@ class Game():
             colour = value[0]
             index1 = value[1]
             index2 = value[2]
-            # self.createStaticTile(index1, colour)
-            # self.createStaticTile(index2, colour)
             self.graphicsManager.drawEndPoint(index1, colour)
             self.graphicsManager.drawEndPoint(index2, colour)
 
@@ -84,12 +64,6 @@ class Game():
             print("Statics:", self.statics)
             print("Centre points:", self.centrePoints)
             print("Filled tiles:", self.filledTiles)
-
-
-    def createStaticTile(self, index, colour):
-        self.statics.append([index, colour])
-        centrePoint = self.centrePoints[index]
-        pygame.draw.circle(self.screen, colour, centrePoint, math.floor(self.sideLength/3))
     
 
     def removeTile(self, index):
@@ -136,23 +110,23 @@ class Game():
             
             
                     
-                    
+if __name__ == "__main__":              
 
-try:
-    if sys.argv[1] == "-d": 
-        game = Game(True)
-    else:
+    try:
+        if sys.argv[1] == "-d": 
+            game = Game(True)
+        else:
+            game = Game()
+    except IndexError:
         game = Game()
-except IndexError:
-    game = Game()
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: 
-            if game.dev: print("Exiting..")
-            sys.exit()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: 
+                if game.dev: print("Exiting..")
+                sys.exit()
 
-        game.mouseManager.mouseTrack(event)
+            game.mouseManager.mouseTrack(event)
 
-    
-    pygame.display.flip()
+        
+        pygame.display.flip()
