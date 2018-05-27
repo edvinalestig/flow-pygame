@@ -8,8 +8,16 @@ class MouseManager():
 
     def mouseTrack(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-
             pos = pygame.mouse.get_pos()
+
+
+            if self.game.dev:
+                if self.game.reloadButton.collidepoint(pos):
+                    print("\nReloading game\n")
+                    self.game.__init__(True)
+                    return
+
+            
             for i, value in enumerate(self.game.rectangles):
                 if value.collidepoint(pos):
                     self.lastSelectedTile = i
