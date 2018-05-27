@@ -18,7 +18,6 @@ class Game():
         self.rectangles = []
         self.statics = []
         self.filledTiles = []
-        # self.mousePressed = False
         
         level = levels.getLevel()
         self.loadLevel(level)
@@ -108,6 +107,20 @@ class Game():
         self.filledTiles[index] = False
 
 
+    def drawLine(self, tile1, tile2, colour):
+        for array in self.statics:
+            if array[0] == tile2:
+                if array[1] != colour:
+                    return
+        if self.filledTiles[tile2]:
+            return
+        
+        tile1Centre = self.centrePoints[tile1]
+        tile2Centre = self.centrePoints[tile2]
+        
+        width = 10
+        rect = pygame.draw.line(self.screen, colour, tile1Centre, tile2Centre, width)
+        self.filledTiles[tile2] = True
 
 
 
