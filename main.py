@@ -1,4 +1,4 @@
-import pygame, sys, json
+import pygame, sys, json, copy
 import levels, mouseManager, graphicsManager
 
 
@@ -75,6 +75,26 @@ class Game():
                 return
 
         self.graphicsManager.removeTile(tile)
+        newConnections = copy.copy(self.connections)
+
+        for i, connection in enumerate(self.connections):
+            if self.dev: print("0:", connection[0], "1:", connection[1])
+            
+            if connection[0] == tile:
+                index = newConnections.index(connection)
+                del newConnections[index]
+                self.reloadBoard()
+
+                if self.dev: print("Deleted", connection)
+            if connection[1] == tile:
+                index = newConnections.index(connection)
+                del newConnections[index]
+                self.reloadBoard()
+                if self.dev: print("Deleted", connection)
+        self.connections = newConnections
+        self.reloadBoard()
+
+
 
 
     def drawLine(self, tile1, tile2, colour):
@@ -113,9 +133,44 @@ class Game():
 
 
     def addConnection(self, tile1, tile2, colour):
-        self.connections.append((tile1, tile2, colour))
-        self.reloadBoard()
-        print("Connections:", self.connections)
+        connectionsFound = 0
+        staticTile = False
+        for connection in self.connections:
+            if connection[0] == tile1 or connection[0] == tile2 or connection[1] == tile1 or connection[1] == tile2:
+                #if self.dev: print("Connection found")
+                connectionsFound += 1
+
+        if connectionsFound > 1:
+            falseConnection = True
+        else:
+            falseConnection = False
+        
+            for static in self.statics:
+                if self.dev: print(static[0])
+
+                if static[0] == tile1:
+                    
+
+                    if connectionsFound > 0:
+                        
+                        falseConnection = True
+                    else:
+                        if static[1] != colour:
+                            falseConnection = True
+                if static[0] == tile1 or static[0] == tile2:
+                    if static[1] != colour:
+                            falseConnection = True
+
+
+
+        if self.dev: print("Connections found:", connectionsFound)
+
+        if not falseConnection:
+            self.connections.append((tile1, tile2, colour))
+            self.reloadBoard()
+            if self.dev: print("Connections:", self.connections)
+        else:
+            self.mouseManager.mousePressed = False
 
 
 
