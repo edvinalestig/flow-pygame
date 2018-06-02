@@ -126,7 +126,7 @@ class Game():
             falseConnection = False
         
             for static in self.statics:
-                if self.dev: print(static[0])
+                # if self.dev: print(static[0])
 
                 if static[0] == tile1:
                     
@@ -160,9 +160,9 @@ class Game():
             self.graphicsManager.drawSmoothTurn(centrePoint2, connection[2])
         # Not very efficient but it works.
 
-    # def replaceConnection(self, tile, colour):
-    #     self.removeTile(tile)
-    #     self.addConnection()
+    def replaceConnection(self, tile, colour):
+        self.removeTile(tile)
+        self.addConnection(self.lastSelectedTile, tile, colour)
 
     def mousePressed(self):
         pos = pygame.mouse.get_pos()
@@ -212,6 +212,7 @@ class Game():
             if rect.collidepoint(pos):
                 if i != self.lastSelectedTile:
 
+
                     neighbourTile = False
                     if i == self.lastSelectedTile + 1:
                         neighbourTile = True
@@ -224,18 +225,35 @@ class Game():
 
                     if neighbourTile:
                         try:
+                            
                             self.changedTiles.index(i)
+
                             return
 
                         except ValueError:
                             self.changedTiles.append(i)
 
-                        if self.dev: print("Tile changed:", i)
+                        connectionsFound = self.findConnections(i)
+                        if self.dev: print(f"Connections found: {connectionsFound[0]}")
+                        if connectionsFound[0] > 0:
 
-                        self.addConnection(self.lastSelectedTile, i, self.selectedColour)
-                        # self.game.drawLine(self.lastSelectedTile, i, self.selectedColour)
+                            connectionIndex = connectionsFound[1][0]
+                            if self.dev: print(f"Index: {connectionIndex}")
 
-                        self.lastSelectedTile = i
+                            colour = self.connections[connectionIndex][2]
+                            if colour != self.selectedColour:
+                                if self.dev: print("Replacing connection...")
+                                self.replaceConnection(i, self.selectedColour)
+                                self.lastSelectedTile = i
+
+                        else:
+
+                            if self.dev: print("Tile changed:", i)
+
+                            self.addConnection(self.lastSelectedTile, i, self.selectedColour)
+                            # self.game.drawLine(self.lastSelectedTile, i, self.selectedColour)
+
+                            self.lastSelectedTile = i
                     return
 
     def findConnections(self, tile):
