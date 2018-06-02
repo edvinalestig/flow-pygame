@@ -49,7 +49,7 @@ class Game():
 
 
         # Create the end points (static tiles)
-        for value in self.level["colours"]:
+        for value in self.level["points"]:
             colour = value[0]
             index1 = value[1]
             index2 = value[2]
@@ -121,7 +121,7 @@ class Game():
         # When a connection is removed it becomes easier to remove the line.
         self.graphicsManager.drawBoard(self.sideLength, self.width, self.height)
 
-        for value in self.level["colours"]:
+        for value in self.level["points"]:
             colour = value[0]
             tile1 = value[1]
             tile2 = value[2]
