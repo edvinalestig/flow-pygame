@@ -51,7 +51,9 @@ class Game():
 
         fillHeight, fillWidth = self.sideLength * self.height, self.sideLength * self.width
 
-        self.screen = pygame.display.set_mode(size)
+        screen = pygame.display
+        screen.set_caption("Flow")
+        self.screen = screen.set_mode(size)
     
 
         # Create the end points (static tiles)
