@@ -1,5 +1,5 @@
 import pygame, sys, json, copy
-import levels, mouseManager, graphicsManager
+import levels, mouseManager, graphicsManager, winChecker
 
 
 class Game():
@@ -111,6 +111,7 @@ class Game():
             self.graphicsManager.drawLine(array[0], array[1], array[2])
 
         self.smoothenTurns()
+        print("Win:", winChecker.checkWin(self.statics, self.height, self.width, self.findConnections))
         
 
 
@@ -288,5 +289,4 @@ if __name__ == "__main__":
 
             game.mouseManager.mouseTrack(event)
 
-        
         pygame.display.flip()
