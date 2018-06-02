@@ -42,21 +42,19 @@ class Game():
         fillHeight, fillWidth = self.sideLength * self.height, self.sideLength * self.width
 
         self.screen = pygame.display.set_mode(size)
-        
-
-        # Draw board
-        self.graphicsManager.drawBoard(self.sideLength, self.width, self.height)
-
+    
 
         # Create the end points (static tiles)
         for value in self.level["points"]:
             colour = value[0]
             index1 = value[1]
             index2 = value[2]
-            self.graphicsManager.drawEndPoint(index1, colour)
-            self.graphicsManager.drawEndPoint(index2, colour)
             self.statics.append([index1, colour])
             self.statics.append([index2, colour])
+
+
+        # Reload the board with the new level
+        self.reloadBoard()
 
         # Extra stuff for developer mode
         if self.dev: 
@@ -182,6 +180,71 @@ class Game():
             self.graphicsManager.drawSmoothTurn(centrePoint1, connection[2])
             self.graphicsManager.drawSmoothTurn(centrePoint2, connection[2])
         # Not very efficient but it works.
+
+    def replaceConnection(self, tile, colour):
+        pass
+
+    def mousePressed(self):
+        pos = pygame.mouse.get_pos()
+
+
+        if self.dev:
+            if self.reloadButton.collidepoint(pos):
+                print("\nReloading game\n")
+                self.__init__(True)
+                return
+
+        
+        for i, value in enumerate(self.rectangles):
+            if value.collidepoint(pos):
+                self.lastSelectedTile = i
+
+                for array in self.statics:
+                    if array[0] == i:
+                        self.mouseManager.mousePressed = True
+                        if self.dev: print("Mouse pressed on a static tile")
+                        
+                        self.selectedColour = array[1]
+                        if self.dev: print("Selected colour:", self.selectedColour)
+
+                        self.changedTiles = []
+
+                        return
+                if self.filledTiles[i]:
+                    self.removeTile(i)
+
+    def mouseMoved(self):
+        pos = pygame.mouse.get_pos()
+
+        for i, rect in enumerate(self.rectangles):
+            if rect.collidepoint(pos):
+                if i != self.lastSelectedTile:
+
+                    neighbourTile = False
+                    if i == self.lastSelectedTile + 1:
+                        neighbourTile = True
+                    elif i == self.lastSelectedTile - 1:
+                        neighbourTile = True
+                    elif i == self.lastSelectedTile + self.width:
+                        neighbourTile = True
+                    elif i == self.lastSelectedTile - self.width:
+                        neighbourTile = True
+
+                    if neighbourTile:
+                        try:
+                            self.changedTiles.index(i)
+                            return
+
+                        except ValueError:
+                            self.changedTiles.append(i)
+
+                        if self.dev: print("Tile changed:", i)
+
+                        self.addConnection(self.lastSelectedTile, i, self.selectedColour)
+                        # self.game.drawLine(self.lastSelectedTile, i, self.selectedColour)
+
+                        self.lastSelectedTile = i
+                    return
 
 
 
