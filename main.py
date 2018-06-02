@@ -1,4 +1,4 @@
-import pygame, sys, json, copy
+import pygame, sys, json, copy, math
 import levels, mouseManager, graphicsManager, winChecker
 
 
@@ -6,11 +6,11 @@ class Game():
     def __init__(self, dev=False):
         self.dev = dev
         
-        with open("config.txt") as f:
-            config = json.loads(f.read())
+        # with open("config.txt") as f:
+        #     config = json.loads(f.read())
 
-        if self.dev: print(config)
-        self.sideLength = config["sideLength"]
+        # if self.dev: print(config)
+        # self.sideLength = config["sideLength"]
 
         # Initialise classes
         pygame.init()
@@ -32,9 +32,19 @@ class Game():
 
 
     def loadLevel(self):
-        
         self.height = self.level["height"]
         self.width = self.level["width"]
+
+        screenHeight = math.floor(750 / (self.height+2))
+        screenWidth = math.floor(1920 / (self.width+2))
+        if self.dev: print(f"Height: {screenHeight}, Width: {screenWidth}")
+
+        if screenHeight > screenWidth:
+            self.sideLength = screenWidth
+        else:
+            self.sideLength = screenHeight
+       
+        if self.dev: print(f"Side length: {self.sideLength}")
 
         size = self.sideLength * (self.width+2), self.sideLength * (self.height+2)
         if self.dev: print("Screen size:", size)

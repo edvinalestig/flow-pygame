@@ -3,7 +3,7 @@ import pygame, math
 class GraphicsManager():
     def __init__(self, logicClass):
         self.logic = logicClass
-        self.length = logicClass.sideLength
+
 
     
     def drawBoard(self, length, width, height):        
@@ -36,7 +36,7 @@ class GraphicsManager():
 
     def drawEndPoint(self, tile, colour):
         centrePoint = self.logic.centrePoints[tile]
-        pygame.draw.circle(self.logic.screen, colour, centrePoint, math.floor(self.length/3))
+        pygame.draw.circle(self.logic.screen, colour, centrePoint, math.floor(self.logic.sideLength/3))
 
 
     def removeTile(self, tile):
@@ -49,15 +49,18 @@ class GraphicsManager():
         tile1Centre = self.logic.centrePoints[tile1]
         tile2Centre = self.logic.centrePoints[tile2]
         
-        width = self.length/4
-        width = math.floor(width + 0.5)
+        width = math.floor(self.logic.sideLength/4 + 0.5)
+
+        if width % 2 == 0:
+            width += 1
+        self.radius = math.floor(width/2)
+
         rect = pygame.draw.line(self.logic.screen, colour, tile1Centre, tile2Centre, width)
         self.logic.filledTiles[tile2] = True
 
 
     def drawSmoothTurn(self, point, colour):
-        radius = math.floor(self.length / 8 + 0.5) 
-        pygame.draw.circle(self.logic.screen, colour, point, radius)
+        pygame.draw.circle(self.logic.screen, colour, point, self.radius)
 
 
     def drawWinScreen(self):
