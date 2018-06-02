@@ -117,10 +117,8 @@ class Game():
     def addConnection(self, tile1, tile2, colour):
         connectionsFound = 0
         staticTile = False
-        for connection in self.connections:
-            if connection[0] == tile1 or connection[0] == tile2 or connection[1] == tile1 or connection[1] == tile2:
-                #if self.dev: print("Connection found")
-                connectionsFound += 1
+        connectionsFound += self.findConnections(tile1)[0]
+        connectionsFound += self.findConnections(tile2)[0]
 
         if connectionsFound > 1:
             falseConnection = True
@@ -162,8 +160,9 @@ class Game():
             self.graphicsManager.drawSmoothTurn(centrePoint2, connection[2])
         # Not very efficient but it works.
 
-    def replaceConnection(self, tile, colour):
-        pass
+    # def replaceConnection(self, tile, colour):
+    #     self.removeTile(tile)
+    #     self.addConnection()
 
     def mousePressed(self):
         pos = pygame.mouse.get_pos()
@@ -192,7 +191,19 @@ class Game():
 
                         return
                 if self.filledTiles[i]:
-                    self.removeTile(i)
+                    connectionsFound = self.findConnections(i)
+                    if connectionsFound[0] == 1:
+                        self.mouseManager.mousePressed = True
+                        if self.dev: print("Mouse pressed on a coloured tile")
+                        
+                        index = connectionsFound[1][0]
+                        self.selectedColour = self.connections[index][2]
+                        if self.dev: print("Selected colour:", self.selectedColour)
+
+                        self.changedTiles = []
+                        return
+                    else:
+                        self.removeTile(i)
 
     def mouseMoved(self):
         pos = pygame.mouse.get_pos()
@@ -227,6 +238,14 @@ class Game():
                         self.lastSelectedTile = i
                     return
 
+    def findConnections(self, tile):
+        connectionsFound = 0
+        connectionIndex = []
+        for index, connection in enumerate(self.connections):
+            if connection[0] == tile or connection[1] == tile:
+                connectionsFound += 1
+                connectionIndex.append(index)
+        return connectionsFound, connectionIndex
 
 
             
