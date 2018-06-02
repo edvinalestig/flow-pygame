@@ -23,6 +23,7 @@ class Game():
         self.statics = []
         self.filledTiles = []
         self.connections = []
+        self.roundTurns = []
         
         self.level = levels.getLevel()
         self.loadLevel()
@@ -129,6 +130,8 @@ class Game():
 
         for array in self.connections:
             self.graphicsManager.drawLine(array[0], array[1], array[2])
+
+        self.smoothenTurns()
         
 
 
@@ -171,6 +174,14 @@ class Game():
             if self.dev: print("Connections:", self.connections)
         else:
             self.mouseManager.mousePressed = False
+
+    def smoothenTurns(self):
+        for connection in self.connections:
+            centrePoint1 = self.centrePoints[connection[0]]
+            centrePoint2 = self.centrePoints[connection[1]]
+            self.graphicsManager.drawSmoothTurn(centrePoint1, connection[2])
+            self.graphicsManager.drawSmoothTurn(centrePoint2, connection[2])
+        # Not very efficient but it works.
 
 
 

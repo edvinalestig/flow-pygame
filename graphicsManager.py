@@ -50,6 +50,10 @@ class GraphicsManager():
         tile2Centre = self.logic.centrePoints[tile2]
         
         width = self.length/4
-        width = math.floor(width)
+        width = math.floor(width + 0.5)
         rect = pygame.draw.line(self.logic.screen, colour, tile1Centre, tile2Centre, width)
         self.logic.filledTiles[tile2] = True
+
+    def drawSmoothTurn(self, point, colour):
+        radius = math.floor(self.length / 8 + 0.5) 
+        pygame.draw.circle(self.logic.screen, colour, point, radius)
