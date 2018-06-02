@@ -111,7 +111,8 @@ class Game():
             self.graphicsManager.drawLine(array[0], array[1], array[2])
 
         self.smoothenTurns()
-        print("Win:", winChecker.checkWin(self.statics, self.height, self.width, self.findConnections))
+        if winChecker.checkWin(self.statics, self.height, self.width, self.findConnections):
+            self.graphicsManager.drawWinScreen()
         
 
 
