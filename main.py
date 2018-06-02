@@ -95,25 +95,6 @@ class Game():
 
 
 
-
-    def drawLine(self, tile1, tile2, colour):
-        for array in self.statics:
-            if array[0] == tile2:
-                if array[1] != colour:
-                    self.mouseManager.mousePressed = False
-                    return
-            if array[0] == tile1:
-                if array[1] != colour:
-                    self.mouseManager.mousePressed = False
-                    return
-
-        if self.filledTiles[tile2]:
-            self.mouseManager.mousePressed = False
-            return
-        
-        self.graphicsManager.drawLine(tile1, tile2, colour)
-
-
     def reloadBoard(self):
         # When a new connection is added, reload the board to show new lines. 
         # When a connection is removed it becomes easier to remove the line.
