@@ -1,8 +1,8 @@
 import pygame, math
 
 class GraphicsManager():
-    def __init__(self, logicClass):
-        self.logic = logicClass
+    def __init__(self, gameLogic):
+        self.logic = gameLogic
 
 
     
@@ -67,4 +67,23 @@ class GraphicsManager():
         screenWidth, screenHeight = self.logic.screen.get_size()
         middleX = math.floor(screenWidth/2 + 0.5)
         middleY = math.floor(screenHeight/2 + 0.5)
-        pygame.draw.circle(self.logic.screen, (255, 0, 255), (middleX, middleY), 100)
+
+        width, height = 400, 250
+        left = middleX - width/2
+        top = middleY - height/2
+
+        winRect = pygame.Rect(left, top, width, height)
+        pygame.draw.rect(self.logic.screen, (0,0,0), winRect)
+        pygame.draw.rect(self.logic.screen, (255, 255, 255), winRect, 5)
+
+        font = pygame.font.SysFont("framd.ttf", 48)
+        
+        textSurface = font.render("Level Complete!", True, (255, 255, 255))
+        size = font.size("Level Complete!")
+
+        left = math.floor(middleX - size[0]/2 + 0.5)
+        top = math.floor(middleY - size[1]/2 + 0.5)
+        
+        self.logic.screen.blit(textSurface, (left, top))
+
+        

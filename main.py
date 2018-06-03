@@ -27,6 +27,8 @@ class Game():
         
         self.level = levels.getLevel()
         self.loadLevel()
+        
+        if self.dev: print("Available fonts:", pygame.font.get_fonts())
 
         
 
