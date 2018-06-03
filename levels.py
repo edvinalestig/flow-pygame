@@ -22,8 +22,11 @@ def getLevel():
     points2 = [[yellow, 3, 96], [red, 4, 43], [purple, 6, 97], [grey, 13, 68], [orange, 31, 58], [blue, 32, 40], [darkGreen, 33, 66], [white, 42, 59], [magenta, 52, 88], [darkRed, 60, 87], [cyan, 67, 65]]
     level2 = Level(points2, 9, 11)
 
+    points3 = [(darkGreen, 22, 104), (red, 34, 123), (blue, 44, 127), (yellow, 65, 117), (orange, 90, 133), (cyan, 105, 124)]
+    level3 = Level(points3, 12, 12)
 
-    levels = [level1, level2]
+
+    levels = [level1, level2, level3]
     level = random.randint(0, len(levels)-1)
     return levels[level]
 
