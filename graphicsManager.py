@@ -5,7 +5,6 @@ class GraphicsManager():
         self.logic = gameLogic
 
 
-    
     def drawBoard(self, length, width, height):        
         totalHeight = length * height
         totalWidth = length * width
@@ -28,7 +27,6 @@ class GraphicsManager():
 
                 centrePoint = (math.floor(x + length/2), math.floor(y + length/2))
                 self.logic.centrePoints.append(centrePoint)
-                self.logic.filledTiles.append(False)
 
                 x += length
             y += length
@@ -42,7 +40,6 @@ class GraphicsManager():
     def removeTile(self, tile):
         pygame.draw.rect(self.logic.screen, (0, 0, 0), self.logic.rectangles[tile])
         pygame.draw.rect(self.logic.screen, (64, 64, 176), self.logic.rectangles[tile], 5)
-        self.logic.filledTiles[tile] = False
 
 
     def drawLine(self, tile1, tile2, colour):
@@ -56,7 +53,6 @@ class GraphicsManager():
         self.radius = math.floor(width/2)
 
         rect = pygame.draw.line(self.logic.screen, colour, tile1Centre, tile2Centre, width)
-        self.logic.filledTiles[tile2] = True
 
 
     def drawSmoothTurn(self, point, colour):
@@ -76,8 +72,8 @@ class GraphicsManager():
         pygame.draw.rect(self.logic.screen, (0,0,0), winRect)
         pygame.draw.rect(self.logic.screen, (255, 255, 255), winRect, 5)
 
+
         font = pygame.font.SysFont("framd.ttf", 48)
-        
         textSurface = font.render("Level Complete!", True, (255, 255, 255))
         size = font.size("Level Complete!")
 
@@ -85,5 +81,3 @@ class GraphicsManager():
         top = math.floor(middleY - size[1]/2 + 0.5)
         
         self.logic.screen.blit(textSurface, (left, top))
-
-        

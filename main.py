@@ -21,7 +21,6 @@ class Game():
         self.centrePoints = []
         self.rectangles = []
         self.statics = []
-        self.filledTiles = []
         self.connections = []
         self.roundTurns = []
         
@@ -206,20 +205,20 @@ class Game():
                         self.changedTiles = []
 
                         return
-                if self.filledTiles[i]:
-                    connectionsFound = self.findConnections(i)
-                    if connectionsFound[0] == 1:
-                        self.mouseManager.mousePressed = True
-                        if self.dev: print("Mouse pressed on a coloured tile")
-                        
-                        index = connectionsFound[1][0]
-                        self.selectedColour = self.connections[index][2]
-                        if self.dev: print("Selected colour:", self.selectedColour)
+                connectionsFound = self.findConnections(i)
+                if connectionsFound[0] == 1:
+                    self.mouseManager.mousePressed = True
+                    if self.dev: print("Mouse pressed on a coloured tile")
+                    
+                    index = connectionsFound[1][0]
+                    self.selectedColour = self.connections[index][2]
+                    if self.dev: print("Selected colour:", self.selectedColour)
 
-                        self.changedTiles = []
-                        return
-                    else:
-                        self.removeTile(i)
+                    self.changedTiles = []
+                    return
+                elif connectionsFound[0] == 2:
+                    if self.dev: print("Connections:", connectionsFound[0])
+                    self.removeTile(i)
 
     def mouseMoved(self):
         pos = pygame.mouse.get_pos()
