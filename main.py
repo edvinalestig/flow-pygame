@@ -25,12 +25,12 @@ class Game():
         
         # Load the level
         self.level = levels.getLevel()
-        self.loadLevel()
+        self.loadLevel(self.level)
 
         
 
 
-    def loadLevel(self):
+    def loadLevel(self, level):
         self.height = self.level["height"]
         self.width = self.level["width"]
 
@@ -48,7 +48,7 @@ class Game():
         size = self.sideLength * (self.width+2), self.sideLength * (self.height+2)
         if self.dev: print("Screen size:", size)
 
-        fillHeight, fillWidth = self.sideLength * self.height, self.sideLength * self.width
+        # fillHeight, fillWidth = self.sideLength * self.height, self.sideLength * self.width
 
         screen = pygame.display
         screen.set_caption("Flow")

@@ -1,3 +1,4 @@
 {
-    "sideLength": 50
+    "screenWidth": 1920,
+    "screenHeight": 780
 }
