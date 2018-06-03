@@ -25,18 +25,20 @@ def getLevel():
     Level2 = Level(points2, 9, 11)
 
 
-    levels = [level1, level2]
+    levels = [Level1, Level2]
     level = random.randint(0, len(levels)-1)
     return levels[level]
 
 
 class Level():
     def __init__(self, points, width, height):
-        length = self.getSideLength(width, height)
-        self.screenSize = length * (width+2), length * (height+2)
+        self.length = self.getSideLength(width, height)
+        self.screenSize = self.length * (width+2), self.length * (height+2)
+        self.width = width
+        self.height = height
         
         self.statics = self.createStatics(points)
-        self.rectangles, self.centrePoints = self.createTiles(length, width, height)
+        self.rectangles, self.centrePoints = self.createTiles(self.length, width, height)
 
 
     def getSideLength(self, width, height):

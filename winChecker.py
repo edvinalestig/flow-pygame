@@ -1,5 +1,5 @@
-def checkWin(statics, height, width, findConnections):
-    size = height * width
+def checkWin(statics, rectangles, findConnections):
+    size = len(rectangles)
     for i in range(size):
         staticTile = False
         for static in statics:
@@ -8,7 +8,7 @@ def checkWin(statics, height, width, findConnections):
                     return False
                 staticTile = True
                 break
-                
+
         if not staticTile:
             if findConnections(i)[0] != 2:
                 return False

@@ -12,57 +12,27 @@ class Game():
         # if self.dev: print(config)
         # self.sideLength = config["sideLength"]
 
+        # Game data
+        self.level = levels.getLevel()
+        self.connections = []
+
         # Initialise classes
         pygame.init()
         self.mouseManager = mouseManager.MouseManager(self)
         self.graphicsManager = graphicsManager.GraphicsManager(self)
 
-        # Game data
-        self.centrePoints = []
-        self.rectangles = []
-        self.statics = []
-        self.connections = []
-        
         # Load the level
-        self.level = levels.getLevel()
         self.loadLevel(self.level)
+
+        
 
         
 
 
     def loadLevel(self, level):
-        self.height = self.level["height"]
-        self.width = self.level["width"]
-
-        screenHeight = math.floor(750 / (self.height+2))
-        screenWidth = math.floor(1920 / (self.width+2))
-        if self.dev: print(f"Height: {screenHeight}, Width: {screenWidth}")
-
-        if screenHeight > screenWidth:
-            self.sideLength = screenWidth
-        else:
-            self.sideLength = screenHeight
-       
-        if self.dev: print(f"Side length: {self.sideLength}")
-
-        size = self.sideLength * (self.width+2), self.sideLength * (self.height+2)
-        if self.dev: print("Screen size:", size)
-
-        # fillHeight, fillWidth = self.sideLength * self.height, self.sideLength * self.width
-
         screen = pygame.display
         screen.set_caption("Flow")
-        self.screen = screen.set_mode(size)
-    
-
-        # Create the end points (static tiles)
-        for value in self.level["points"]:
-            colour = value[0]
-            index1 = value[1]
-            index2 = value[2]
-            self.statics.append([index1, colour])
-            self.statics.append([index2, colour])
-
+        self.screen = screen.set_mode(level.screenSize)
 
         # Reload the board with the new level
         self.reloadBoard()
@@ -73,14 +43,14 @@ class Game():
             self.reloadButton = pygame.draw.rect(self.screen, (255,255,255), rect)
 
             print("Level loaded")
-            print("Rectangles:", self.rectangles)
-            print("Statics:", self.statics)
-            print("Centre points:", self.centrePoints)
+            print("Rectangles:", self.level.rectangles)
+            print("Statics:", self.level.statics)
+            print("Centre points:", self.level.centrePoints)
             print("Connections:", self.connections)
     
 
     def removeTile(self, tile):
-        for array in self.statics:
+        for array in self.level.statics:
             if array[0] == tile:
                 return
 
@@ -109,20 +79,24 @@ class Game():
     def reloadBoard(self):
         # When a new connection is added, reload the board to show new lines. 
         # When a connection is removed it becomes easier to remove the line.
-        self.graphicsManager.drawBoard(self.sideLength, self.width, self.height)
+        self.graphicsManager.drawBoard(self.level) # <----------------
 
-        for value in self.level["points"]:
-            colour = value[0]
-            tile1 = value[1]
-            tile2 = value[2]
-            self.graphicsManager.drawEndPoint(tile1, colour)
-            self.graphicsManager.drawEndPoint(tile2, colour)
+        # for value in self.level["points"]:
+        #     colour = value[0]
+        #     tile1 = value[1]
+        #     tile2 = value[2]
+        #     self.graphicsManager.drawEndPoint(tile1, colour)
+        #     self.graphicsManager.drawEndPoint(tile2, colour)
+
+        for static in self.level.statics:
+            tile, colour = static
+            self.graphicsManager.drawEndPoint(tile, colour)
 
         for array in self.connections:
             self.graphicsManager.drawLine(array[0], array[1], array[2])
 
         self.smoothenTurns()
-        if winChecker.checkWin(self.statics, self.height, self.width, self.findConnections):
+        if winChecker.checkWin(self.level.statics, self.level.rectangles, self.findConnections):
             self.graphicsManager.drawWinScreen()
         
 
@@ -138,7 +112,7 @@ class Game():
         else:
             falseConnection = False
         
-            for static in self.statics:
+            for static in self.level.statics:
                 # if self.dev: print(static[0])
 
                 if static[0] == tile1:
@@ -167,8 +141,8 @@ class Game():
 
     def smoothenTurns(self):
         for connection in self.connections:
-            centrePoint1 = self.centrePoints[connection[0]]
-            centrePoint2 = self.centrePoints[connection[1]]
+            centrePoint1 = self.level.centrePoints[connection[0]]
+            centrePoint2 = self.level.centrePoints[connection[1]]
             self.graphicsManager.drawSmoothTurn(centrePoint1, connection[2])
             self.graphicsManager.drawSmoothTurn(centrePoint2, connection[2])
         # Not very efficient but it works.
@@ -184,15 +158,16 @@ class Game():
         if self.dev:
             if self.reloadButton.collidepoint(pos):
                 print("\nReloading game\n")
+                # pygame.quit()
                 self.__init__(True)
                 return
 
         
-        for i, value in enumerate(self.rectangles):
+        for i, value in enumerate(self.level.rectangles):
             if value.collidepoint(pos):
                 self.lastSelectedTile = i
 
-                for array in self.statics:
+                for array in self.level.statics:
                     if array[0] == i:
                         self.mouseManager.mousePressed = True
                         if self.dev: print("Mouse pressed on a static tile")
@@ -221,7 +196,7 @@ class Game():
     def mouseMoved(self):
         pos = pygame.mouse.get_pos()
 
-        for i, rect in enumerate(self.rectangles):
+        for i, rect in enumerate(self.level.rectangles):
             if rect.collidepoint(pos):
                 if i != self.lastSelectedTile:
 
@@ -231,9 +206,9 @@ class Game():
                         neighbourTile = True
                     elif i == self.lastSelectedTile - 1:
                         neighbourTile = True
-                    elif i == self.lastSelectedTile + self.width:
+                    elif i == self.lastSelectedTile + self.level.width:
                         neighbourTile = True
-                    elif i == self.lastSelectedTile - self.width:
+                    elif i == self.lastSelectedTile - self.level.width:
                         neighbourTile = True
 
                     if neighbourTile:
