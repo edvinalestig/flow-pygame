@@ -1,48 +1,18 @@
 import random, json, math
 import pygame
 
-def getLevel():
-    red = (255, 0, 0)
-    green = (0, 255, 0)
-    blue = (0, 0, 255)
-    yellow = (255, 255, 0)
-    magenta = (255, 0, 255)
-    cyan = (0, 255, 255)
-    white = (255, 255, 255)
-    grey = (127, 127, 127)
-    orange = (255, 128, 0)
-    darkGreen = (0, 100, 0)
-    purple = (128, 0, 128)
-    darkRed = (139, 0, 0)
-    
-    # [colour, start tile, end tile]
-    points1 = [[red, 0, 24], [green, 1, 14], [blue, 12, 23], [yellow, 10, 20], [cyan, 11, 21]]
-    level1 = Level(points1, 5, 5)
-
-    points2 = [[yellow, 3, 96], [red, 4, 43], [purple, 6, 97], [grey, 13, 68], [orange, 31, 58], [blue, 32, 40], [darkGreen, 33, 66], [white, 42, 59], [magenta, 52, 88], [darkRed, 60, 87], [cyan, 67, 65]]
-    level2 = Level(points2, 9, 11)
-
-    points3 = [(darkGreen, 22, 104), (red, 34, 123), (blue, 44, 127), (yellow, 65, 117), (orange, 90, 133), (cyan, 105, 124)]
-    level3 = Level(points3, 12, 12)
-
-
-    levels = [level1, level2, level3]
-    level = random.randint(0, len(levels)-1)
-    return levels[level]
-
-
 class Level():
     def __init__(self, points, width, height):
-        self.length = self.getSideLength(width, height)
+        self.length = self.__getSideLength(width, height)
         self.screenSize = self.length * (width+2), self.length * (height+2)
         self.width = width
         self.height = height
         
-        self.statics = self.createStatics(points)
-        self.rectangles, self.centrePoints = self.createTiles(self.length, width, height)
+        self.statics = self.__createStatics(points)
+        self.rectangles, self.centrePoints = self.__createTiles(self.length, width, height)
 
 
-    def getSideLength(self, width, height):
+    def __getSideLength(self, width, height):
         with open("config.txt") as f:
             config = json.loads(f.read())
 
@@ -60,7 +30,7 @@ class Level():
         return sideLength
 
 
-    def createStatics(self, points):
+    def __createStatics(self, points):
         statics = []
         for array in points:
             colour = array[0]
@@ -72,7 +42,7 @@ class Level():
         return statics
         
 
-    def createTiles(self, length, width, height):
+    def __createTiles(self, length, width, height):
         rectangles = []
         centrePoints = []
         
@@ -96,3 +66,36 @@ class Level():
             y += length
 
         return rectangles, centrePoints
+
+
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+yellow = (255, 255, 0)
+magenta = (255, 0, 255)
+cyan = (0, 255, 255)
+white = (255, 255, 255)
+grey = (127, 127, 127)
+orange = (255, 128, 0)
+darkGreen = (0, 100, 0)
+purple = (128, 0, 128)
+darkRed = (139, 0, 0)
+
+# [colour, start tile, end tile]
+points1 = [[red, 0, 24], [green, 1, 14], [blue, 12, 23], [yellow, 10, 20], [cyan, 11, 21]]
+level1 = Level(points1, 5, 5)
+
+points2 = [[yellow, 3, 96], [red, 4, 43], [purple, 6, 97], [grey, 13, 68], [orange, 31, 58], [blue, 32, 40], [darkGreen, 33, 66], [white, 42, 59], [magenta, 52, 88], [darkRed, 60, 87], [cyan, 67, 65]]
+level2 = Level(points2, 9, 11)
+
+points3 = [(darkGreen, 22, 104), (red, 34, 123), (blue, 44, 127), (yellow, 65, 117), (orange, 90, 133), (cyan, 105, 124)]
+level3 = Level(points3, 12, 12)
+
+levels = [level1, level2, level3]
+
+def getRandomLevel():
+    level = random.randint(0, len(levels)-1)
+    return levels[level]
+
+def getLevel(number):
+    return levels[number]

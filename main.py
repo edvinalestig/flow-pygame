@@ -7,7 +7,8 @@ class Game():
         self.dev = dev
 
         # Game data
-        self.level = levels.getLevel()
+        self.level = levels.getRandomLevel()
+        # self.level = levels.level1
         self.connections = []
 
         # Initialise classes
