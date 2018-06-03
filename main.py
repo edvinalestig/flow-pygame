@@ -22,12 +22,10 @@ class Game():
         self.rectangles = []
         self.statics = []
         self.connections = []
-        self.roundTurns = []
         
+        # Load the level
         self.level = levels.getLevel()
         self.loadLevel()
-        
-        if self.dev: print("Available fonts:", pygame.font.get_fonts())
 
         
 
