@@ -19,33 +19,11 @@ class GraphicsManager():
         
         for rectangle in level.rectangles:
             pygame.draw.rect(self.logic.screen, borderColour, rectangle, 5)
-        
-        # y = length
-        # while y < totalHeight + length:
-
-        #     x = length
-        #     while x < totalWidth + length:
-
-        #         # Rect(left, top, width, height) -> Rect
-        #         rectangle = pygame.Rect(x, y, length, length)
-        #         pygame.draw.rect(self.logic.screen, borderColour, rectangle, 5)
-        #         self.logic.rectangles.append(rectangle)
-
-        #         centrePoint = (math.floor(x + length/2), math.floor(y + length/2))
-        #         self.logic.centrePoints.append(centrePoint)
-
-        #         x += length
-        #     y += length
 
 
     def drawEndPoint(self, tile, colour):
         centrePoint = self.level.centrePoints[tile]
         pygame.draw.circle(self.logic.screen, colour, centrePoint, math.floor(self.level.length/3))
-
-
-    def removeTile(self, tile): # Used?
-        pygame.draw.rect(self.logic.screen, (0, 0, 0), self.level.rectangles[tile])
-        pygame.draw.rect(self.logic.screen, (64, 64, 176), self.level.rectangles[tile], 5)
 
 
     def drawLine(self, tile1, tile2, colour):

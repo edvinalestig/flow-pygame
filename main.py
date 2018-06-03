@@ -5,12 +5,6 @@ import levels, mouseManager, graphicsManager, winChecker
 class Game():
     def __init__(self, dev=False):
         self.dev = dev
-        
-        # with open("config.txt") as f:
-        #     config = json.loads(f.read())
-
-        # if self.dev: print(config)
-        # self.sideLength = config["sideLength"]
 
         # Game data
         self.level = levels.getLevel()
@@ -25,10 +19,6 @@ class Game():
         self.loadLevel(self.level)
 
         
-
-        
-
-
     def loadLevel(self, level):
         screen = pygame.display
         screen.set_caption("Flow")
@@ -54,7 +44,6 @@ class Game():
             if array[0] == tile:
                 return
 
-        self.graphicsManager.removeTile(tile)
         newConnections = copy.copy(self.connections)
 
         for i, connection in enumerate(self.connections):
@@ -79,14 +68,7 @@ class Game():
     def reloadBoard(self):
         # When a new connection is added, reload the board to show new lines. 
         # When a connection is removed it becomes easier to remove the line.
-        self.graphicsManager.drawBoard(self.level) # <----------------
-
-        # for value in self.level["points"]:
-        #     colour = value[0]
-        #     tile1 = value[1]
-        #     tile2 = value[2]
-        #     self.graphicsManager.drawEndPoint(tile1, colour)
-        #     self.graphicsManager.drawEndPoint(tile2, colour)
+        self.graphicsManager.drawBoard(self.level)
 
         for static in self.level.statics:
             tile, colour = static
@@ -113,17 +95,15 @@ class Game():
             falseConnection = False
         
             for static in self.level.statics:
-                # if self.dev: print(static[0])
-
+                
                 if static[0] == tile1:
-                    
 
                     if connectionsFound > 0:
-                        
                         falseConnection = True
                     else:
                         if static[1] != colour:
                             falseConnection = True
+
                 if static[0] == tile1 or static[0] == tile2:
                     if static[1] != colour:
                             falseConnection = True
@@ -139,6 +119,7 @@ class Game():
         else:
             self.mouseManager.mousePressed = False
 
+
     def smoothenTurns(self):
         for connection in self.connections:
             centrePoint1 = self.level.centrePoints[connection[0]]
@@ -147,13 +128,14 @@ class Game():
             self.graphicsManager.drawSmoothTurn(centrePoint2, connection[2])
         # Not very efficient but it works.
 
+
     def replaceConnection(self, tile, colour):
         self.removeTile(tile)
         self.addConnection(self.lastSelectedTile, tile, colour)
 
+
     def mousePressed(self):
         pos = pygame.mouse.get_pos()
-
 
         if self.dev:
             if self.reloadButton.collidepoint(pos):
@@ -161,7 +143,6 @@ class Game():
                 # pygame.quit()
                 self.__init__(True)
                 return
-
         
         for i, value in enumerate(self.level.rectangles):
             if value.collidepoint(pos):
@@ -178,6 +159,7 @@ class Game():
                         self.changedTiles = []
 
                         return
+
                 connectionsFound = self.findConnections(i)
                 if connectionsFound[0] == 1:
                     self.mouseManager.mousePressed = True
@@ -193,15 +175,15 @@ class Game():
                     if self.dev: print("Connections:", connectionsFound[0])
                     self.removeTile(i)
 
+
     def mouseMoved(self):
         pos = pygame.mouse.get_pos()
 
         for i, rect in enumerate(self.level.rectangles):
             if rect.collidepoint(pos):
                 if i != self.lastSelectedTile:
-
-
                     neighbourTile = False
+
                     if i == self.lastSelectedTile + 1:
                         neighbourTile = True
                     elif i == self.lastSelectedTile - 1:
@@ -213,7 +195,6 @@ class Game():
 
                     if neighbourTile:
                         try:
-                            
                             self.changedTiles.index(i)
 
                             return
@@ -235,14 +216,13 @@ class Game():
                                 self.lastSelectedTile = i
 
                         else:
-
                             if self.dev: print("Tile changed:", i)
 
                             self.addConnection(self.lastSelectedTile, i, self.selectedColour)
-                            # self.game.drawLine(self.lastSelectedTile, i, self.selectedColour)
-
                             self.lastSelectedTile = i
+                    
                     return
+
 
     def findConnections(self, tile):
         connectionsFound = 0
@@ -253,18 +233,16 @@ class Game():
                 connectionIndex.append(index)
         return connectionsFound, connectionIndex
 
-
-            
             
             
                     
 if __name__ == "__main__":              
-
     try:
         if sys.argv[1] == "-d": 
             game = Game(True)
         else:
             game = Game()
+
     except IndexError:
         game = Game()
 
