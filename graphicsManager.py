@@ -82,3 +82,20 @@ class GraphicsManager():
         top = math.floor(middleY - size[1]/2 + 0.5)
         
         self.logic.screen.blit(textSurface, (left, top))
+
+
+    def drawColouredBox(self, colour, width, height, corner):
+        if corner == "centred":
+            screenWidth, screenHeight = self.logic.screen.get_size()
+            middleX = math.floor(screenWidth/2 + 0.5)
+            middleY = math.floor(screenHeight/2 + 0.5)
+
+            # Define the upper left corner.
+            left = middleX - width/2
+            top = middleY - height/2
+            corner = (left, top)
+
+        rect = pygame.Rect(corner[0], corner[1], width, height)
+        pygame.draw.rect(self.logic.screen, colour, rect)
+
+        return rect
