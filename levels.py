@@ -3,25 +3,37 @@ import pygame
 
 class Level():
     def __init__(self, points, width, height):
+        """Initialise the level with screen info and tiles."""
+        
+        # Length in pixels
         self.length = self.__getSideLength(width, height)
+        # Screen size in pixels
         self.screenSize = self.length * (width+2), self.length * (height+2)
+        # Width in tiles
         self.width = width
+        # Height in tiles
         self.height = height
         
+        # Creating the static and normal tiles.
         self.statics = self.__createStatics(points)
         self.rectangles, self.centrePoints = self.__createTiles(self.length, width, height)
 
 
     def __getSideLength(self, width, height):
+        """Returns the optimal tile side length."""
+
+        # Get screen size from config file.
         with open("config.txt") as f:
             config = json.loads(f.read())
 
         tileWidth = config["screenWidth"]
         tileHeight = config["screenHeight"]
 
+        # Get max tile height and width.
         tileHeight = math.floor(tileHeight / (height+2))
         tileWidth = math.floor(tileWidth / (width+2))
 
+        # Get the smallest of the two so the tile can be square.
         if tileHeight > tileWidth:
             sideLength = tileWidth
         else:
@@ -31,6 +43,8 @@ class Level():
 
 
     def __createStatics(self, points):
+        """Creates a list of static tiles."""
+
         statics = []
         for array in points:
             colour = array[0]
@@ -43,22 +57,26 @@ class Level():
         
 
     def __createTiles(self, length, width, height):
+        """Creates a list of tiles and their centre points."""
+
         rectangles = []
         centrePoints = []
         
+        # Defines the dimensions required to fit all tiles
         totalHeight = length * height
         totalWidth = length * width
         
+        # Go through all tiles
         y = length
         while y < totalHeight + length:
 
             x = length
             while x < totalWidth + length:
-
-                # Rect(left, top, width, height) -> Rect
+                # Creates a Rect object
                 rectangle = pygame.Rect(x, y, length, length)
                 rectangles.append(rectangle)
 
+                # Calculates the tile's centre point.
                 centrePoint = (math.floor(x + length/2), math.floor(y + length/2))
                 centrePoints.append(centrePoint)
 
@@ -68,6 +86,7 @@ class Level():
         return rectangles, centrePoints
 
 
+# Colours
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
@@ -81,6 +100,9 @@ darkGreen = (0, 100, 0)
 purple = (128, 0, 128)
 darkRed = (139, 0, 0)
 
+
+# --- The levels ---
+
 # [colour, start tile, end tile]
 points1 = [[red, 0, 24], [green, 1, 14], [blue, 12, 23], [yellow, 10, 20], [cyan, 11, 21]]
 level1 = Level(points1, 5, 5)
@@ -93,6 +115,8 @@ level3 = Level(points3, 12, 12)
 
 levels = [level1, level2, level3]
 
+
+# Functions to call when you want to get a level.
 def getRandomLevel():
     level = random.randint(0, len(levels)-1)
     return levels[level]
