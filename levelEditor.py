@@ -1,4 +1,4 @@
-import sys, pygame, math
+import sys, pygame, math, json
 import levels, graphicsManager, colours
 
 
@@ -22,7 +22,11 @@ class LevelEditor():
     def mouseManager(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
-            self.addStatic(pos)
+
+            if self.textBox.collidepoint(pos):
+                self.saveLevel()
+            else:
+                self.addStatic(pos)
 
 
     def addStatic(self, pos):
@@ -77,7 +81,37 @@ class LevelEditor():
             colour = (0,0,0)
         self.graphicsManager.drawColouredBox(colour, self.level.length, self.level.length, (0,0))
 
-        self.graphicsManager.drawTextBox("Save", 48, (self.level.length + 8, 8))
+        self.textBox = self.graphicsManager.drawTextBox("Save", 48, (self.level.length + 8, 8))
+
+
+    def saveLevel(self):
+        points = []
+        for static in self.statics:
+            found = False
+            i = 0
+            while i < len(points):
+                if points[i][0] == static[1]:
+                    points[i].append(static[0])
+                    found = True
+                    break
+                i += 1
+            
+            if not found:
+                points.append([static[1], static[0]])
+
+        with open("levels.json") as f:
+            levels = json.loads(f.read())
+        newLevel = {}
+        newLevel["points"] = points
+        newLevel["height"] = self.level.height
+        newLevel["width"] = self.level.width
+        levels.append(newLevel)
+
+        with open("levels.json", "w") as f:
+            f.write(json.dumps(levels, indent=4))
+
+        
+        print(points)
 
 
 

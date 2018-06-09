@@ -104,22 +104,26 @@ darkRed = (139, 0, 0)
 # --- The levels ---
 
 # [colour, start tile, end tile]
-points1 = [[red, 0, 24], [green, 1, 14], [blue, 12, 23], [yellow, 10, 20], [cyan, 11, 21]]
-level1 = Level(points1, 5, 5)
+# points1 = [[red, 0, 24], [green, 1, 14], [blue, 12, 23], [yellow, 10, 20], [cyan, 11, 21]]
+# level1 = Level(points1, 5, 5)
 
-points2 = [[yellow, 3, 96], [red, 4, 43], [purple, 6, 97], [grey, 13, 68], [orange, 31, 58], [blue, 32, 40], [darkGreen, 33, 66], [white, 42, 59], [magenta, 52, 88], [darkRed, 60, 87], [cyan, 67, 65]]
-level2 = Level(points2, 9, 11)
+# points2 = [[yellow, 3, 96], [red, 4, 43], [purple, 6, 97], [grey, 13, 68], [orange, 31, 58], [blue, 32, 40], [darkGreen, 33, 66], [white, 42, 59], [magenta, 52, 88], [darkRed, 60, 87], [cyan, 67, 65]]
+# level2 = Level(points2, 9, 11)
 
-points3 = [(darkGreen, 22, 104), (red, 34, 123), (blue, 44, 127), (yellow, 65, 117), (orange, 90, 133), (cyan, 105, 124)]
-level3 = Level(points3, 12, 12)
+# points3 = [(darkGreen, 22, 104), (red, 34, 123), (blue, 44, 127), (yellow, 65, 117), (orange, 90, 133), (cyan, 105, 124)]
+# level3 = Level(points3, 12, 12)
 
-levels = [level1, level2, level3]
+# levels = [level1, level2, level3]
+
+with open("levels.json") as f:
+    levels = json.loads(f.read())
+
 
 
 # Functions to call when you want to get a level.
 def getRandomLevel():
     level = random.randint(0, len(levels)-1)
-    return levels[level]
+    return Level(levels[level]["points"], levels[level]["width"], levels[level]["height"])
 
 def getLevel(number):
     return levels[number]
