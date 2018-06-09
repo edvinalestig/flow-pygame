@@ -118,7 +118,7 @@ class LevelEditor():
 
 
         with open(filename, "w") as f:
-            f.write(json.dumps(levels, indent=4))
+            f.write(json.dumps(levels)) # , indent=4
 
         
         print(points)
@@ -131,7 +131,7 @@ class LevelEditor():
 
 
 
-if __name__ == "__main__":              
+if __name__ == "__main__":
     try:
         width = int(sys.argv[1])
         height = int(sys.argv[2])

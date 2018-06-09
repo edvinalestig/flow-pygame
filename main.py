@@ -20,7 +20,6 @@ class Game():
             self.level = levels.getTestLevel()
         else:
             self.level = levels.getRandomLevel()
-        # self.level = levels.level1
         self.connections = []
 
         # Initialise classes
