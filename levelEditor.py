@@ -43,11 +43,11 @@ class LevelEditor():
                 if not colour: return
 
                 self.statics.append((i, colour))
-
-                self.reloadBoard()
-
+                
                 if self.colourOverride:
                     del self.colourOverride[0]
+
+                self.reloadBoard()
 
                 return
 
@@ -72,6 +72,12 @@ class LevelEditor():
         for static in self.statics:
             self.graphicsManager.drawEndPoint(static[0], static[1])
 
+        colour = self.selectColour()
+        if not colour:
+            colour = (0,0,0)
+        self.graphicsManager.drawColouredBox(colour, self.level.length, self.level.length, (0,0))
+
+
 
 
 if __name__ == "__main__":              
@@ -92,6 +98,7 @@ if __name__ == "__main__":
         print("Not a valid input.")
         print("Usage: levelEditor.py <width> <height>")
         sys.exit()
+
 
     while True:
         for event in pygame.event.get():
