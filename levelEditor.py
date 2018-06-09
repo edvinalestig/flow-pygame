@@ -77,6 +77,8 @@ class LevelEditor():
             colour = (0,0,0)
         self.graphicsManager.drawColouredBox(colour, self.level.length, self.level.length, (0,0))
 
+        self.graphicsManager.drawTextBox("Save", 48, (self.level.length + 8, 8))
+
 
 
 

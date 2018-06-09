@@ -99,3 +99,27 @@ class GraphicsManager():
         pygame.draw.rect(self.logic.screen, colour, rect)
 
         return rect
+
+    
+    def drawTextBox(self, text, fontSize, corner):
+        # Add the text.
+        font = pygame.font.SysFont("framd.ttf", fontSize)
+        textSurface = font.render(text, True, (255, 255, 255))
+        size = font.size(text)      
+
+        if corner == "centred":
+            # Get the middle coords of the screen.
+            screenWidth, screenHeight = self.logic.screen.get_size()
+            middleX = math.floor(screenWidth/2 + 0.5)
+            middleY = math.floor(screenHeight/2 + 0.5)
+
+            # Define the upper left corner.
+            left = math.floor(middleX - size[0]/2 + 0.5)
+            top = math.floor(middleY - size[1]/2 + 0.5)
+
+            corner = (left, top)
+        
+        self.logic.screen.blit(textSurface, corner)
+
+        rect = pygame.Rect(corner, size)
+        return rect
