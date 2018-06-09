@@ -1,0 +1,15 @@
+# Colours
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+yellow = (255, 255, 0)
+magenta = (255, 0, 255)
+cyan = (0, 255, 255)
+white = (255, 255, 255)
+grey = (127, 127, 127)
+orange = (255, 128, 0)
+darkGreen = (0, 100, 0)
+purple = (128, 0, 128)
+darkRed = (139, 0, 0)
+
+colours = (red, green, blue, yellow, magenta, cyan, white, grey, orange, darkGreen, purple, darkRed)

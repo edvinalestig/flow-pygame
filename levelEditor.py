@@ -1,17 +1,57 @@
-import sys, pygame
-import levels, graphicsManager
+import sys, pygame, math
+import levels, graphicsManager, colours
 
 
 class LevelEditor():
     def __init__(self, level):
         self.level = level
 
+        self.statics = []
+
         screen = pygame.display
         screen.set_caption("Flow - Level editor")
         self.screen = screen.set_mode(level.screenSize)
 
         self.graphicsManager = graphicsManager.GraphicsManager(self)
+        self.reloadBoard()
+
+
+    def mouseManager(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            self.addStatic(pos)
+
+
+    def addStatic(self, pos):
+        colourIndex = math.floor(len(self.statics)/2)
+        if colourIndex >= len(colours.colours):
+            print("No more colours.")
+            return
+            
+        colour = colours.colours[colourIndex]
+
+        for i, rect in enumerate(self.level.rectangles):
+            if rect.collidepoint(pos):
+                try:
+                    index = self.statics.index(i) # NOPE
+                    del self.statics[index]
+                    # self.reloadBoard()
+
+                    # return
+                    print("Hello")
+
+                except ValueError:
+                    self.statics.append((i, colour))
+
+                self.reloadBoard()
+                return
+
+
+    def reloadBoard(self):
         self.graphicsManager.drawBoard(self.level)
+        for static in self.statics:
+            self.graphicsManager.drawEndPoint(static[0], static[1])
+
 
 
 if __name__ == "__main__":              
@@ -25,7 +65,7 @@ if __name__ == "__main__":
 
         level = levels.Level([], width, height)
 
-        LevelEditor(level)
+        editor = LevelEditor(level)
 
 
     except (IndexError, TypeError):
@@ -39,7 +79,8 @@ if __name__ == "__main__":
                 print("Exiting..")
                 sys.exit()
 
-            
+
+            editor.mouseManager(event)
 
         # Update the screen.
         pygame.display.flip()
