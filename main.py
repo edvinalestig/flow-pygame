@@ -157,7 +157,6 @@ class Game():
                         self.selectedColour = array[1]
                         if self.dev: print("Selected colour:", self.selectedColour)
 
-                        self.changedTiles = []
 
                         return
 
@@ -170,7 +169,6 @@ class Game():
                     self.selectedColour = self.connections[index][2]
                     if self.dev: print("Selected colour:", self.selectedColour)
 
-                    self.changedTiles = []
                     return
                 elif connectionsFound[0] == 2:
                     if self.dev: print("Connections:", connectionsFound[0])
@@ -182,9 +180,12 @@ class Game():
 
         for i, rect in enumerate(self.level.rectangles):
             if rect.collidepoint(pos):
+                # If the mouse has moved to a different tile.
                 if i != self.lastSelectedTile:
+                    
+                    # Check if the new tile is right next to the old.
                     neighbourTile = False
-
+                   
                     if i == self.lastSelectedTile + 1:
                         neighbourTile = True
                     elif i == self.lastSelectedTile - 1:
@@ -195,16 +196,10 @@ class Game():
                         neighbourTile = True
 
                     if neighbourTile:
-                        try:
-                            self.changedTiles.index(i)
-
-                            return
-
-                        except ValueError:
-                            self.changedTiles.append(i)
-
                         connectionsFound = self.findConnections(i)
                         if self.dev: print(f"Connections found: {connectionsFound[0]}")
+                        
+                        # If the tile already has connections which will be replaced or removed
                         if connectionsFound[0] > 0:
 
                             connectionIndex = connectionsFound[1][0]
@@ -214,7 +209,11 @@ class Game():
                             if colour != self.selectedColour:
                                 if self.dev: print("Replacing connection...")
                                 self.replaceConnection(i, self.selectedColour)
-                                self.lastSelectedTile = i
+                            else:
+                                if self.dev: print("Backtracking, removing connection...")
+                                self.removeTile(self.lastSelectedTile)
+                            self.lastSelectedTile = i
+                            
 
                         else:
                             if self.dev: print("Tile changed:", i)
