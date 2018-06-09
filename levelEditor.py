@@ -1,4 +1,4 @@
-import sys, pygame, math, json
+import sys, pygame, math, json, os
 import levels, graphicsManager, colours
 
 
@@ -23,8 +23,10 @@ class LevelEditor():
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
 
-            if self.textBox.collidepoint(pos):
+            if self.saveBox.collidepoint(pos):
                 self.saveLevel()
+            elif self.testBox.collidepoint(pos):
+                self.testLevel()
             else:
                 self.addStatic(pos)
 
@@ -81,10 +83,11 @@ class LevelEditor():
             colour = (0,0,0)
         self.graphicsManager.drawColouredBox(colour, self.level.length, self.level.length, (0,0))
 
-        self.textBox = self.graphicsManager.drawTextBox("Save", 48, (self.level.length + 8, 8))
+        self.saveBox = self.graphicsManager.drawTextBox("Save", 48, (self.level.length + 8, 8))
+        self.testBox = self.graphicsManager.drawTextBox("Test the level", 48, (self.level.length * 3 + 8, 8))
 
 
-    def saveLevel(self):
+    def saveLevel(self, test=False):
         points = []
         for static in self.statics:
             found = False
@@ -99,19 +102,31 @@ class LevelEditor():
             if not found:
                 points.append([static[1], static[0]])
 
-        with open("levels.json") as f:
-            levels = json.loads(f.read())
+        if test:
+            levels = []
+            filename = "tempsave.json"
+        else:
+            with open("levels.json") as f:
+                levels = json.loads(f.read())
+            filename = "levels.json"
+
         newLevel = {}
         newLevel["points"] = points
         newLevel["height"] = self.level.height
         newLevel["width"] = self.level.width
         levels.append(newLevel)
 
-        with open("levels.json", "w") as f:
+
+        with open(filename, "w") as f:
             f.write(json.dumps(levels, indent=4))
 
         
         print(points)
+
+    def testLevel(self):
+        self.saveLevel(True)
+        os.system("main.py -t -d")
+
 
 
 

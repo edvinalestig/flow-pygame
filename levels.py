@@ -127,3 +127,8 @@ def getRandomLevel():
 
 def getLevel(number):
     return levels[number]
+
+def getTestLevel():
+    with open("tempsave.json") as f:
+        level = json.loads(f.read())[0]
+        return Level(level["points"], level["width"], level["height"])

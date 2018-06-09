@@ -3,11 +3,23 @@ import levels, mouseManager, graphicsManager, winChecker
 
 
 class Game():
-    def __init__(self, dev=False):
-        self.dev = dev
+    def __init__(self, alts):
+        self.dev = False
+        self.testingMode = False
+        
+        # Start alternatives
+        for alt in alts:
+            if alt == "-d":
+                self.dev = True
+            if alt == "-t":
+                self.testingMode = True
+
 
         # Game data
-        self.level = levels.getRandomLevel()
+        if self.testingMode:
+            self.level = levels.getTestLevel()
+        else:
+            self.level = levels.getRandomLevel()
         # self.level = levels.level1
         self.connections = []
 
@@ -164,7 +176,7 @@ class Game():
             if self.reloadButton.collidepoint(pos):
                 print("\nReloading game\n")
                 # pygame.quit()
-                self.__init__(True)
+                self.__init__(sys.argv)
                 return
         
         # Go through all tiles and find which one has been pressed.
@@ -275,15 +287,23 @@ class Game():
             
                     
 if __name__ == "__main__":              
-    try:
-        # Check start alternatives
-        if sys.argv[1] == "-d": # Developer mode
-            game = Game(True)
-        else:
-            game = Game()
+    # try:
+    #     # Check start alternatives
+    #     # for alt in sys.argv:
+    #     #     if alt == "-d": 
+    #     #         dev = True
+    #     #         # game = Game(True)
+    #     if sys.argv[1] == "-d": # Developer mode
+    #         game = Game(True)
+    #     elif sys.argv[1] == "-t": # Level testing mode
+    #         game = Game(True)
+    #     else:
+    #         game = Game()
 
-    except IndexError:
-        game = Game()
+    # except IndexError:
+    #     game = Game()
+
+    game = Game(sys.argv)
 
     # Main loop
     while True:
