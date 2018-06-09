@@ -1,4 +1,4 @@
 {
-    "screenWidth": 1920,
+    "screenWidth": 1500,
     "screenHeight": 795
 }
