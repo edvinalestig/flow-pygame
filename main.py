@@ -285,23 +285,7 @@ class Game():
             
             
                     
-if __name__ == "__main__":              
-    # try:
-    #     # Check start alternatives
-    #     # for alt in sys.argv:
-    #     #     if alt == "-d": 
-    #     #         dev = True
-    #     #         # game = Game(True)
-    #     if sys.argv[1] == "-d": # Developer mode
-    #         game = Game(True)
-    #     elif sys.argv[1] == "-t": # Level testing mode
-    #         game = Game(True)
-    #     else:
-    #         game = Game()
-
-    # except IndexError:
-    #     game = Game()
-
+if __name__ == "__main__":
     game = Game(sys.argv)
 
     # Main loop
