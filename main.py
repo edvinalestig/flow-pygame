@@ -43,10 +43,14 @@ class Game():
     def removeTile(self, tile):
         for array in self.level.statics:
             if array[0] == tile:
+                # Don't do anything if the tile is static.
                 return
 
+        # Make a copy of the connections.
         newConnections = copy.copy(self.connections)
 
+        # Find all connections within the tile.
+        # Loop over the old list and remove from the new.
         for i, connection in enumerate(self.connections):
             if self.dev: print("0:", connection[0], "1:", connection[1])
             
@@ -61,36 +65,46 @@ class Game():
                 del newConnections[index]
                 self.reloadBoard()
                 if self.dev: print("Deleted", connection)
+        
+        # Replace the connections list
         self.connections = newConnections
         self.reloadBoard()
 
 
 
     def reloadBoard(self):
-        # When a new connection is added, reload the board to show new lines. 
-        # When a connection is removed it becomes easier to remove the line.
+        # Reload the board with all connections and statics etc.
         self.graphicsManager.drawBoard(self.level)
 
+        # Draw the statics
         for static in self.level.statics:
             tile, colour = static
             self.graphicsManager.drawEndPoint(tile, colour)
 
+        # Draw the connections
         for array in self.connections:
             self.graphicsManager.drawLine(array[0], array[1], array[2])
 
+        # Draw the ends of the lines
         self.smoothenTurns()
+
+        # Check if the player has won
         if winChecker.checkWin(self.level.statics, self.level.rectangles, self.findConnections):
             self.graphicsManager.drawWinScreen()
         
 
 
     def addConnection(self, tile1, tile2, colour):
+        """Adds a connections between two tiles with a colour."""
+
+        # Info about the two tiles
         connectionsFound = 0
         staticTile = False
         connectionsFound += self.findConnections(tile1)[0]
         connectionsFound += self.findConnections(tile2)[0]
 
         if connectionsFound > 1:
+            # Tile already has too many connections and can't handle another one.
             falseConnection = True
         else:
             falseConnection = False
@@ -100,28 +114,34 @@ class Game():
                 if static[0] == tile1:
 
                     if connectionsFound > 0:
+                        # The static tile can't handle more connections and has reached the limit.
                         falseConnection = True
                     else:
                         if static[1] != colour:
+                            # The static tile is not the same colour.
                             falseConnection = True
 
                 if static[0] == tile1 or static[0] == tile2:
                     if static[1] != colour:
-                            falseConnection = True
+                        # The static tile is not the same colour.
+                        falseConnection = True
 
 
 
         if self.dev: print("Connections found:", connectionsFound)
 
+        # Add a connection if it's a valid move.
         if not falseConnection:
             self.connections.append((tile1, tile2, colour))
             self.reloadBoard()
             if self.dev: print("Connections:", self.connections)
         else:
+            # Release the mouse to prevent making connections beyond faulty connections.
             self.mouseManager.mousePressed = False
 
 
     def smoothenTurns(self):
+        # Go through all connections and add a small circle to each end.
         for connection in self.connections:
             centrePoint1 = self.level.centrePoints[connection[0]]
             centrePoint2 = self.level.centrePoints[connection[1]]
@@ -131,11 +151,13 @@ class Game():
 
 
     def replaceConnection(self, tile, colour):
+        """Replaces an old connection with a new one."""
         self.removeTile(tile)
         self.addConnection(self.lastSelectedTile, tile, colour)
 
 
     def mousePressed(self):
+        # Called when the mouse button has been pressed.
         pos = pygame.mouse.get_pos()
 
         if self.dev:
@@ -145,10 +167,13 @@ class Game():
                 self.__init__(True)
                 return
         
+        # Go through all tiles and find which one has been pressed.
         for i, value in enumerate(self.level.rectangles):
             if value.collidepoint(pos):
+                # The tile pressed is i.
                 self.lastSelectedTile = i
 
+                # Check if the tile is static.
                 for array in self.level.statics:
                     if array[0] == i:
                         self.mouseManager.mousePressed = True
@@ -157,9 +182,11 @@ class Game():
                         self.selectedColour = array[1]
                         if self.dev: print("Selected colour:", self.selectedColour)
 
+                        # Information stored about colour and selected tile. Ready for mouse movement.
 
                         return
 
+                # Check if mouse pressed a line stump which can be continued.
                 connectionsFound = self.findConnections(i)
                 if connectionsFound[0] == 1:
                     self.mouseManager.mousePressed = True
@@ -169,8 +196,11 @@ class Game():
                     self.selectedColour = self.connections[index][2]
                     if self.dev: print("Selected colour:", self.selectedColour)
 
+                    # Information stored about colour and selected tile. Ready for mouse movement.
+
                     return
                 elif connectionsFound[0] == 2:
+                    # Tile has 2 connections and they will therefore be removed.
                     if self.dev: print("Connections:", connectionsFound[0])
                     self.removeTile(i)
 
@@ -178,6 +208,7 @@ class Game():
     def mouseMoved(self):
         pos = pygame.mouse.get_pos()
 
+        # Check which tile was pressed
         for i, rect in enumerate(self.level.rectangles):
             if rect.collidepoint(pos):
                 # If the mouse has moved to a different tile.
@@ -199,7 +230,7 @@ class Game():
                         connectionsFound = self.findConnections(i)
                         if self.dev: print(f"Connections found: {connectionsFound[0]}")
                         
-                        # If the tile already has connections which will be replaced or removed
+                        # If the tile already has connections, replace or remove them.
                         if connectionsFound[0] > 0:
 
                             connectionIndex = connectionsFound[1][0]
@@ -207,15 +238,18 @@ class Game():
 
                             colour = self.connections[connectionIndex][2]
                             if colour != self.selectedColour:
+                                # The tile is not the same colour and should be overwritten.
                                 if self.dev: print("Replacing connection...")
                                 self.replaceConnection(i, self.selectedColour)
                             else:
+                                # The tile is the same colour and should be removed.
                                 if self.dev: print("Backtracking, removing connection...")
                                 self.removeTile(self.lastSelectedTile)
                             self.lastSelectedTile = i
                             
 
                         else:
+                            # No connections were found and a new connection will be added.
                             if self.dev: print("Tile changed:", i)
 
                             self.addConnection(self.lastSelectedTile, i, self.selectedColour)
@@ -225,12 +259,16 @@ class Game():
 
 
     def findConnections(self, tile):
+        # Finds the number of connection a tile has.
         connectionsFound = 0
         connectionIndex = []
+
         for index, connection in enumerate(self.connections):
             if connection[0] == tile or connection[1] == tile:
                 connectionsFound += 1
                 connectionIndex.append(index)
+
+        # Return number of connections and a list of the connection indexes.
         return connectionsFound, connectionIndex
 
             
@@ -238,7 +276,8 @@ class Game():
                     
 if __name__ == "__main__":              
     try:
-        if sys.argv[1] == "-d": 
+        # Check start alternatives
+        if sys.argv[1] == "-d": # Developer mode
             game = Game(True)
         else:
             game = Game()
@@ -246,12 +285,15 @@ if __name__ == "__main__":
     except IndexError:
         game = Game()
 
+    # Main loop
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT: 
                 if game.dev: print("Exiting..")
                 sys.exit()
 
+            # Send event to game logic (MouseManager).
             game.mouseManager.mouseTrack(event)
 
+        # Update the screen.
         pygame.display.flip()
