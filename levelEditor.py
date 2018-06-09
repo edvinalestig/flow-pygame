@@ -4,9 +4,12 @@ import levels, graphicsManager, colours
 
 class LevelEditor():
     def __init__(self, level):
+        pygame.init()
+        
         self.level = level
 
         self.statics = []
+        self.colourOverride = []
 
         screen = pygame.display
         screen.set_caption("Flow - Level editor")
@@ -23,28 +26,45 @@ class LevelEditor():
 
 
     def addStatic(self, pos):
-        colourIndex = math.floor(len(self.statics)/2)
-        if colourIndex >= len(colours.colours):
-            print("No more colours.")
-            return
-            
-        colour = colours.colours[colourIndex]
 
         for i, rect in enumerate(self.level.rectangles):
             if rect.collidepoint(pos):
-                try:
-                    index = self.statics.index(i) # NOPE
-                    del self.statics[index]
-                    # self.reloadBoard()
 
-                    # return
-                    print("Hello")
+                for j, static in enumerate(self.statics):
+                    if static[0] == i:
+                        self.colourOverride.append(static[1])
 
-                except ValueError:
-                    self.statics.append((i, colour))
+                        del self.statics[j]
+                        self.reloadBoard()
+
+                        return
+                
+                colour = self.selectColour()
+                if not colour: return
+
+                self.statics.append((i, colour))
 
                 self.reloadBoard()
+
+                if self.colourOverride:
+                    del self.colourOverride[0]
+
                 return
+
+    
+    def selectColour(self):
+        if self.colourOverride:
+            colour = self.colourOverride[0]
+            
+        else:
+            colourIndex = math.floor(len(self.statics)/2)
+            if colourIndex >= len(colours.colours):
+                print("No more colours.")
+                return None
+
+            colour = colours.colours[colourIndex]
+    
+        return colour
 
 
     def reloadBoard(self):
