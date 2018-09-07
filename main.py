@@ -1,5 +1,5 @@
 import pygame, sys, json, copy, math
-import levels, mouseManager, graphicsManager, winChecker
+import levels, mouseManager, graphicsManager, winChecker, menu
 
 
 class Game():
