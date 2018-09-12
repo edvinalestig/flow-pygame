@@ -132,9 +132,15 @@ class EventManager():
         self.rectangles = rectangles
 
     def processEvent(self, event, menu):
-        if event == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            print("Mouse pressed")
             if menu == "levels":
-                pass
+                for i, rectangle in enumerate(self.rectangles):
+                    if rectangle.collidepoint(pos):
+                        print("Level nr " + str(i))
+                        return i
+
             elif menu == "main":
                 pass
 
