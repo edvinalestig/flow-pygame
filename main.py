@@ -19,7 +19,14 @@ class Game():
         if self.testingMode:
             self.level = levels.getTestLevel()
         else:
-            self.level = levels.getRandomLevel()
+            # self.level = levels.getRandomLevel()
+            menu.Menu(self)
+            self.startGame = False
+            
+            
+        
+
+    def initialise(self, level):
         self.connections = []
 
         # Initialise classes
@@ -287,16 +294,17 @@ class Game():
                     
 if __name__ == "__main__":
     game = Game(sys.argv)
-
-    # Main loop
+    
     while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT: 
-                if game.dev: print("Exiting..")
-                sys.exit()
+        # Main loop
+        while game.startGame:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: 
+                    if game.dev: print("Exiting..")
+                    sys.exit()
 
-            # Send event to game logic (MouseManager).
-            game.mouseManager.mouseTrack(event)
+                # Send event to game logic (MouseManager).
+                game.mouseManager.mouseTrack(event)
 
-        # Update the screen.
-        pygame.display.flip()
+            # Update the screen.
+            pygame.display.flip()
