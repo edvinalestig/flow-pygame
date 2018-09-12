@@ -1,4 +1,5 @@
 import pygame, sys, math, json
+import levels
 
 class Menu():
     def __init__(self, main):
@@ -12,8 +13,8 @@ class Menu():
         self.menu = "main"
 
         # self.drawMainMenu()
-        rectangles = self.drawLevelsMenu()
-        self.eventman = EventManager(rectangles)
+        self.rectangles = self.drawLevelsMenu()
+        self.eventman = EventManager()
         self.mainLoop()
 
     
@@ -25,16 +26,25 @@ class Menu():
                     sys.exit()
 
                 # Send event to the event manager.
-                self.eventman.processEvent(event, self.menu)
+                response = self.eventman.processEvent(event, self.menu, self.rectangles)
+                if response == "back":
+                    self.rectangles = self.drawMainMenu()
 
             # Update the screen.
             pygame.display.flip()
 
+    def clearScreen(self):
+        self.rectangles = []
+        s = pygame.Rect((0, 0), self.screenSize)
+        pygame.draw.rect(self.screen, (0,0,0), s)
+
 
     def drawMainMenu(self):
+        self.clearScreen()
+        
         self.menu = "menu"
         self.caption.set_caption("Main Menu")
-        self.rectangles = []
+        rects = []
         
         # Print the header
         font = pygame.font.SysFont("framd.ttf", 72)
@@ -48,8 +58,10 @@ class Menu():
         # End of print header
 
         # Draw buttons
-        self.createMainMenuButton("Levels", 125)
-        self.createMainMenuButton("Level Editor", 200)
+        rects.append(self.createMainMenuButton("Levels", 125))
+        rects.append(self.createMainMenuButton("Level Editor", 200))
+
+        return rects
 
 
 
@@ -72,6 +84,8 @@ class Menu():
 
 
     def drawLevelsMenu(self):
+        self.clearScreen()
+
         self.menu = "levels"
         self.caption.set_caption("Levels")
         self.rectangles = []
@@ -128,18 +142,22 @@ class Menu():
 
 
 class EventManager():
-    def __init__(self, rectangles):
-        self.rectangles = rectangles
+    def __init__(self):
+        pass
 
-    def processEvent(self, event, menu):
+    def processEvent(self, event, menu, rectangles):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             print("Mouse pressed")
             if menu == "levels":
-                for i, rectangle in enumerate(self.rectangles):
+                for i, rectangle in enumerate(rectangles):
                     if rectangle.collidepoint(pos):
                         print("Level nr " + str(i))
-                        return i
+
+                        if i == len(rectangles)-1:
+                            return "back"
+                        else:
+                            return lambda: levels.getLevel(lambda: i)
 
             elif menu == "main":
                 pass
