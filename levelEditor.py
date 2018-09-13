@@ -143,7 +143,7 @@ class LevelEditor():
 
         # Saves to file
         with open(filename, "w") as f:
-            f.write(json.dumps(levels)) # , indent=4
+            f.write(json.dumps(levels, indent=4)) # , indent=4
 
         
         print(points)
