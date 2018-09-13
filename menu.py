@@ -16,6 +16,7 @@ class Menu():
         self.rectangles = self.drawLevelsMenu()
         self.eventman = EventManager()
         self.mainLoop()
+        print("Exited mainloop in menu")
 
     
     def mainLoop(self):
@@ -29,6 +30,13 @@ class Menu():
                 response = self.eventman.processEvent(event, self.menu, self.rectangles)
                 if response == "back":
                     self.rectangles = self.drawMainMenu()
+                elif type(response) == type(lambda: print()):
+                    print("Trying to load level")
+                    self.main.level = response()
+                    self.main.initialise()
+                    print("return")
+                    return
+                    
 
             # Update the screen.
             pygame.display.flip()
@@ -157,7 +165,7 @@ class EventManager():
                         if i == len(rectangles)-1:
                             return "back"
                         else:
-                            return lambda: levels.getLevel(lambda: i)
+                            return lambda: levels.getLevel(i)
 
             elif menu == "main":
                 pass

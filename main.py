@@ -6,6 +6,7 @@ class Game():
     def __init__(self, alts):
         self.dev = False
         self.testingMode = False
+        pygame.init()
         
         # Start alternatives
         for alt in alts:
@@ -21,21 +22,22 @@ class Game():
         else:
             # self.level = levels.getRandomLevel()
             menu.Menu(self)
-            self.startGame = False
+            print("menu initialised")
+            self.startGame = True
             
             
         
 
-    def initialise(self, level):
+    def initialise(self):
         self.connections = []
 
         # Initialise classes
-        pygame.init()
         self.mouseManager = mouseManager.MouseManager(self)
         self.graphicsManager = graphicsManager.GraphicsManager(self)
 
         # Load the level
         self.loadLevel(self.level)
+        self.startGame = True
 
         
     def loadLevel(self, level):
@@ -298,6 +300,7 @@ if __name__ == "__main__":
     while True:
         # Main loop
         while game.startGame:
+            # print("Game has started")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: 
                     if game.dev: print("Exiting..")
