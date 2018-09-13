@@ -18,7 +18,9 @@ class Game():
 
         # Game data
         if self.testingMode:
+            # self.startGame = True
             self.level = levels.getTestLevel()
+            self.initialise()
         else:
             # self.level = levels.getRandomLevel()
             menu.Menu(self)
